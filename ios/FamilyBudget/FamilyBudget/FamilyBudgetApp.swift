@@ -2,88 +2,32 @@ import SwiftUI
 
 @main
 struct FamilyBudgetApp: App {
-    @StateObject private var appState = AppState()
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
-                .environmentObject(appState)
+            MainTabView()
         }
     }
 }
 
-// Main app state
-class AppState: ObservableObject {
-    @Published var isAuthenticated = false
-    @Published var currentUser: User?
-    @Published var familyMembers: [User] = []
-    @Published var isLoading = false
-
-    private let apiClient = APIClient.shared
-
-    init() {
-        loadFamilyMembers()
-    }
-
-    func loadFamilyMembers() {
-        Task {
-            do {
-                let members = try await apiClient.getUsers()
-                await MainActor.run {
-                    self.familyMembers = members
-                }
-            } catch {
-                print("Error loading family members: \(error)")
-            }
-        }
-    }
-}
-
-// Main content view with tab navigation
-struct ContentView: View {
-    @EnvironmentObject var appState: AppState
-
+struct MainTabView: View {
     var body: some View {
         TabView {
             DashboardView()
-                .tabItem {
-                    Image(systemName: "chart.pie.fill")
-                    Text("Home")
-                }
+                .tabItem { Label("Home", systemImage: "house.fill") }
 
             CardholderListView()
-                .tabItem {
-                    Image(systemName: "person.2.fill")
-                    Text("Family")
-                }
+                .tabItem { Label("Family", systemImage: "person.2.fill") }
 
             TransactionListView()
-                .tabItem {
-                    Image(systemName: "list.bullet")
-                    Text("Txns")
-                }
+                .tabItem { Label("Transactions", systemImage: "list.bullet") }
 
             SubscriptionsView()
-                .tabItem {
-                    Image(systemName: "repeat")
-                    Text("Subs")
-                }
+                .tabItem { Label("Subs", systemImage: "repeat") }
 
             SettingsView()
-                .tabItem {
-                    Image(systemName: "gear.fill")
-                    Text("More")
-                }
-        }
-        .onAppear {
-            let appearance = UITabBarAppearance()
-            appearance.configureWithDefaultBackground()
-            UITabBar.appearance().standardAppearance = appearance
+                .tabItem { Label("Settings", systemImage: "gear") }
         }
     }
-}
-
-#Preview {
-    ContentView()
-        .environmentObject(AppState())
 }

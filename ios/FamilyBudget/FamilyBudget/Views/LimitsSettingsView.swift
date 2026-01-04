@@ -7,23 +7,30 @@ struct LimitsSettingsView: View {
 
     var body: some View {
         NavigationView {
-            List {
-                Section {
-                    Text("Set monthly spending limits for each family member. You'll receive alerts when spending reaches 90% of the limit.")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                }
+            ZStack {
+                Color(.systemBackground)
+                    .ignoresSafeArea()
 
-                Section("Spending Limits") {
-                    ForEach(viewModel.users) { user in
-                        LimitRow(
-                            user: user,
-                            anonymize: debugManager.anonymizeNames
-                        ) {
-                            editingUser = user
+                List {
+                    Section {
+                        Text("Set monthly spending limits for each family member. You'll receive alerts when spending reaches 90% of the limit.")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+
+                    Section("Spending Limits") {
+                        ForEach(viewModel.users) { user in
+                            LimitRow(
+                                user: user,
+                                anonymize: debugManager.anonymizeNames
+                            ) {
+                                editingUser = user
+                            }
                         }
                     }
                 }
+                .scrollContentBackground(.hidden)
+                .background(Color(.systemBackground))
             }
             .navigationTitle("Spending Limits")
             .refreshable {

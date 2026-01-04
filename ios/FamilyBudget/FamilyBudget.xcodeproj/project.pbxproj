@@ -5,94 +5,79 @@
 	};
 	objectVersion = 56;
 	objects = {
+
 /* Begin PBXBuildFile section */
-		DA0A1B1A2B0000001A000001 /* FamilyBudgetApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0A1B192B0000001A000001 /* FamilyBudgetApp.swift */; };
-		DA0A1B1C2B0000001A000002 /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0A1B1B2B0000001A000002 /* DashboardView.swift */; };
-		DA0A1B1E2B0000001A000003 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0A1B1D2B0000001A000003 /* SettingsView.swift */; };
-		DA0A1B202B0000001A000004 /* DeveloperModeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0A1B1F2B0000001A000004 /* DeveloperModeView.swift */; };
-		DA0A1B222B0000001A000005 /* CardholderListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0A1B212B0000001A000005 /* CardholderListView.swift */; };
-		DA0A1B242B0000001A000006 /* TransactionListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0A1B232B0000001A000006 /* TransactionListView.swift */; };
-		DA0A1B262B0000001A000007 /* TrendsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0A1B252B0000001A000007 /* TrendsView.swift */; };
-		DA0A1B282B0000001A000008 /* LimitsSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0A1B272B0000001A000008 /* LimitsSettingsView.swift */; };
-		DA0A1B2A2B0000001A000009 /* SubscriptionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0A1B292B0000001A000009 /* SubscriptionsView.swift */; };
-		DA0A1B2C2B000000001A000A /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0A1B2B2B000000001A000A /* APIClient.swift */; };
-		DA0A1B2E2B000000001A000B /* PlaidLinkHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0A1B2D2B000000001A000B /* PlaidLinkHandler.swift */; };
-		DA0A1B302B000000001A000C /* DebugManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0A1B2F2B000000001A000C /* DebugManager.swift */; };
-		DA0A1B322B000000001A000D /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0A1B312B000000001A000D /* User.swift */; };
-		DA0A1B342B000000001A000E /* Transaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0A1B332B000000001A000E /* Transaction.swift */; };
-		DA0A1B362B000000001A000F /* SpendingLimit.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0A1B352B000000001A000F /* SpendingLimit.swift */; };
-		DA0A1B382B0000001A000010 /* Subscription.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0A1B372B0000001A000010 /* Subscription.swift */; };
+		39E449D92F0A290200BB19D2 /* LinkKit in Frameworks */ = {isa = PBXBuildFile; productRef = 39E449DA2F0A290200BB19D2 /* LinkKit */; };
+		39E449DB2F0A492700BB19D2 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39E449DA2F0A492700BB19D2 /* AppDelegate.swift */; };
+		DA0A1B1A2B0000001A000001 /* FamilyBudget/FamilyBudgetApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0A1B192B0000001A000001 /* FamilyBudget/FamilyBudgetApp.swift */; };
+		DA0A1B1C2B0000001A000002 /* FamilyBudget/Views/DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0A1B1B2B0000001A000002 /* FamilyBudget/Views/DashboardView.swift */; };
+		DA0A1B1E2B0000001A000003 /* FamilyBudget/Views/SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0A1B1D2B0000001A000003 /* FamilyBudget/Views/SettingsView.swift */; };
+		DA0A1B202B0000001A000004 /* FamilyBudget/Views/DeveloperModeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0A1B1F2B0000001A000004 /* FamilyBudget/Views/DeveloperModeView.swift */; };
+		DA0A1B222B0000001A000005 /* FamilyBudget/Views/CardholderListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0A1B212B0000001A000005 /* FamilyBudget/Views/CardholderListView.swift */; };
+		DA0A1B242B0000001A000006 /* FamilyBudget/Views/TransactionListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0A1B232B0000001A000006 /* FamilyBudget/Views/TransactionListView.swift */; };
+		DA0A1B262B0000001A000007 /* FamilyBudget/Views/TrendsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0A1B252B0000001A000007 /* FamilyBudget/Views/TrendsView.swift */; };
+		DA0A1B282B0000001A000008 /* FamilyBudget/Views/LimitsSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0A1B272B0000001A000008 /* FamilyBudget/Views/LimitsSettingsView.swift */; };
+		DA0A1B2A2B0000001A000009 /* FamilyBudget/Views/SubscriptionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0A1B292B0000001A000009 /* FamilyBudget/Views/SubscriptionsView.swift */; };
+		DA0A1B2C2B000000001A000A /* FamilyBudget/Services/APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0A1B2B2B000000001A000A /* FamilyBudget/Services/APIClient.swift */; };
+		DA0A1B2E2B000000001A000B /* FamilyBudget/Services/PlaidLinkHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0A1B2D2B000000001A000B /* FamilyBudget/Services/PlaidLinkHandler.swift */; };
+		DA0A1B302B000000001A000C /* FamilyBudget/Services/DebugManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0A1B2F2B000000001A000C /* FamilyBudget/Services/DebugManager.swift */; };
+		DA0A1B322B000000001A000D /* FamilyBudget/Models/User.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0A1B312B000000001A000D /* FamilyBudget/Models/User.swift */; };
+		DA0A1B342B000000001A000E /* FamilyBudget/Models/Transaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0A1B332B000000001A000E /* FamilyBudget/Models/Transaction.swift */; };
+		DA0A1B362B000000001A000F /* FamilyBudget/Models/SpendingLimit.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0A1B352B000000001A000F /* FamilyBudget/Models/SpendingLimit.swift */; };
+		DA0A1B382B0000001A000010 /* FamilyBudget/Models/Subscription.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0A1B372B0000001A000010 /* FamilyBudget/Models/Subscription.swift */; };
+		DA0A1B392B0000001A000011 /* FamilyBudget/Resources/Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DA0A1B3A2B0000001A000011 /* FamilyBudget/Resources/Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		39E449DA2F0A492700BB19D2 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		DA0A1B152B0000001A000000 /* FamilyBudget.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FamilyBudget.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		DA0A1B192B0000001A000001 /* FamilyBudgetApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FamilyBudget/FamilyBudgetApp.swift; sourceTree = SOURCE_ROOT; };
-		DA0A1B1B2B0000001A000002 /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FamilyBudget/Views/DashboardView.swift; sourceTree = SOURCE_ROOT; };
-		DA0A1B1D2B0000001A000003 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FamilyBudget/Views/SettingsView.swift; sourceTree = SOURCE_ROOT; };
-		DA0A1B1F2B0000001A000004 /* DeveloperModeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FamilyBudget/Views/DeveloperModeView.swift; sourceTree = SOURCE_ROOT; };
-		DA0A1B212B0000001A000005 /* CardholderListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FamilyBudget/Views/CardholderListView.swift; sourceTree = SOURCE_ROOT; };
-		DA0A1B232B0000001A000006 /* TransactionListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FamilyBudget/Views/TransactionListView.swift; sourceTree = SOURCE_ROOT; };
-		DA0A1B252B0000001A000007 /* TrendsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FamilyBudget/Views/TrendsView.swift; sourceTree = SOURCE_ROOT; };
-		DA0A1B272B0000001A000008 /* LimitsSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FamilyBudget/Views/LimitsSettingsView.swift; sourceTree = SOURCE_ROOT; };
-		DA0A1B292B0000001A000009 /* SubscriptionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FamilyBudget/Views/SubscriptionsView.swift; sourceTree = SOURCE_ROOT; };
-		DA0A1B2B2B000000001A000A /* APIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FamilyBudget/Services/APIClient.swift; sourceTree = SOURCE_ROOT; };
-		DA0A1B2D2B000000001A000B /* PlaidLinkHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FamilyBudget/Services/PlaidLinkHandler.swift; sourceTree = SOURCE_ROOT; };
-		DA0A1B2F2B000000001A000C /* DebugManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FamilyBudget/Services/DebugManager.swift; sourceTree = SOURCE_ROOT; };
-		DA0A1B312B000000001A000D /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FamilyBudget/Models/User.swift; sourceTree = SOURCE_ROOT; };
-		DA0A1B332B000000001A000E /* Transaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FamilyBudget/Models/Transaction.swift; sourceTree = SOURCE_ROOT; };
-		DA0A1B352B000000001A000F /* SpendingLimit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FamilyBudget/Models/SpendingLimit.swift; sourceTree = SOURCE_ROOT; };
-		DA0A1B372B0000001A000010 /* Subscription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FamilyBudget/Models/Subscription.swift; sourceTree = SOURCE_ROOT; };
+		DA0A1B192B0000001A000001 /* FamilyBudget/FamilyBudgetApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FamilyBudget/FamilyBudgetApp.swift; sourceTree = SOURCE_ROOT; };
+		DA0A1B1B2B0000001A000002 /* FamilyBudget/Views/DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FamilyBudget/Views/DashboardView.swift; sourceTree = SOURCE_ROOT; };
+		DA0A1B1D2B0000001A000003 /* FamilyBudget/Views/SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FamilyBudget/Views/SettingsView.swift; sourceTree = SOURCE_ROOT; };
+		DA0A1B1F2B0000001A000004 /* FamilyBudget/Views/DeveloperModeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FamilyBudget/Views/DeveloperModeView.swift; sourceTree = SOURCE_ROOT; };
+		DA0A1B212B0000001A000005 /* FamilyBudget/Views/CardholderListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FamilyBudget/Views/CardholderListView.swift; sourceTree = SOURCE_ROOT; };
+		DA0A1B232B0000001A000006 /* FamilyBudget/Views/TransactionListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FamilyBudget/Views/TransactionListView.swift; sourceTree = SOURCE_ROOT; };
+		DA0A1B252B0000001A000007 /* FamilyBudget/Views/TrendsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FamilyBudget/Views/TrendsView.swift; sourceTree = SOURCE_ROOT; };
+		DA0A1B272B0000001A000008 /* FamilyBudget/Views/LimitsSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FamilyBudget/Views/LimitsSettingsView.swift; sourceTree = SOURCE_ROOT; };
+		DA0A1B292B0000001A000009 /* FamilyBudget/Views/SubscriptionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FamilyBudget/Views/SubscriptionsView.swift; sourceTree = SOURCE_ROOT; };
+		DA0A1B2B2B000000001A000A /* FamilyBudget/Services/APIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FamilyBudget/Services/APIClient.swift; sourceTree = SOURCE_ROOT; };
+		DA0A1B2D2B000000001A000B /* FamilyBudget/Services/PlaidLinkHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FamilyBudget/Services/PlaidLinkHandler.swift; sourceTree = SOURCE_ROOT; };
+		DA0A1B2F2B000000001A000C /* FamilyBudget/Services/DebugManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FamilyBudget/Services/DebugManager.swift; sourceTree = SOURCE_ROOT; };
+		DA0A1B312B000000001A000D /* FamilyBudget/Models/User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FamilyBudget/Models/User.swift; sourceTree = SOURCE_ROOT; };
+		DA0A1B332B000000001A000E /* FamilyBudget/Models/Transaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FamilyBudget/Models/Transaction.swift; sourceTree = SOURCE_ROOT; };
+		DA0A1B352B000000001A000F /* FamilyBudget/Models/SpendingLimit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FamilyBudget/Models/SpendingLimit.swift; sourceTree = SOURCE_ROOT; };
+		DA0A1B372B0000001A000010 /* FamilyBudget/Models/Subscription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FamilyBudget/Models/Subscription.swift; sourceTree = SOURCE_ROOT; };
+		DA0A1B3A2B0000001A000011 /* FamilyBudget/Resources/Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = FamilyBudget/Resources/Assets.xcassets; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		39E449DB2F0A290200BB19D2 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				39E449D92F0A290200BB19D2 /* LinkKit in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
 		DA0A1B072B0000001A000000 = {
 			isa = PBXGroup;
 			children = (
-				DA0A1B122B0000001A000000 /* FamilyBudget */,
+				DA0A1B122B0000001A000000,
 				DA0A1B162B0000001A000000 /* Products */,
 			);
 			sourceTree = "<group>";
 		};
-		DA0A1B122B0000001A000000 /* FamilyBudget */ = {
+		DA0A1B122B0000001A000000 = {
 			isa = PBXGroup;
 			children = (
-				DA0A1B192B0000001A000001 /* FamilyBudgetApp.swift */,
-				DA0A1B1A2B0000001A000002 /* Views */,
-				DA0A1B1F2B0000001A000003 /* Services */,
-				DA0A1B242B0000001A000004 /* Models */,
-			);
-			sourceTree = "<group>";
-		};
-		DA0A1B1A2B0000001A000002 /* Views */ = {
-			isa = PBXGroup;
-			children = (
-				DA0A1B1B2B0000001A000002 /* DashboardView.swift */,
-				DA0A1B1D2B0000001A000003 /* SettingsView.swift */,
-				DA0A1B1F2B0000001A000004 /* DeveloperModeView.swift */,
-				DA0A1B212B0000001A000005 /* CardholderListView.swift */,
-				DA0A1B232B0000001A000006 /* TransactionListView.swift */,
-				DA0A1B252B0000001A000007 /* TrendsView.swift */,
-				DA0A1B272B0000001A000008 /* LimitsSettingsView.swift */,
-				DA0A1B292B0000001A000009 /* SubscriptionsView.swift */,
-			);
-			sourceTree = "<group>";
-		};
-		DA0A1B1F2B0000001A000003 /* Services */ = {
-			isa = PBXGroup;
-			children = (
-				DA0A1B2B2B000000001A000A /* APIClient.swift */,
-				DA0A1B2D2B000000001A000B /* PlaidLinkHandler.swift */,
-				DA0A1B2F2B000000001A000C /* DebugManager.swift */,
-			);
-			sourceTree = "<group>";
-		};
-		DA0A1B242B0000001A000004 /* Models */ = {
-			isa = PBXGroup;
-			children = (
-				DA0A1B312B000000001A000D /* User.swift */,
-				DA0A1B332B000000001A000E /* Transaction.swift */,
-				DA0A1B352B000000001A000F /* SpendingLimit.swift */,
-				DA0A1B372B0000001A000010 /* Subscription.swift */,
+				DA0A1B192B0000001A000001 /* FamilyBudget/FamilyBudgetApp.swift */,
+				DA0A1B1A2B0000001A000002,
+				DA0A1B1F2B0000001A000003,
+				DA0A1B242B0000001A000004,
+				DA0A1B3A2B0000001A000011 /* FamilyBudget/Resources/Assets.xcassets */,
 			);
 			sourceTree = "<group>";
 		};
@@ -104,6 +89,40 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		DA0A1B1A2B0000001A000002 = {
+			isa = PBXGroup;
+			children = (
+				39E449DA2F0A492700BB19D2 /* AppDelegate.swift */,
+				DA0A1B1B2B0000001A000002 /* FamilyBudget/Views/DashboardView.swift */,
+				DA0A1B1D2B0000001A000003 /* FamilyBudget/Views/SettingsView.swift */,
+				DA0A1B1F2B0000001A000004 /* FamilyBudget/Views/DeveloperModeView.swift */,
+				DA0A1B212B0000001A000005 /* FamilyBudget/Views/CardholderListView.swift */,
+				DA0A1B232B0000001A000006 /* FamilyBudget/Views/TransactionListView.swift */,
+				DA0A1B252B0000001A000007 /* FamilyBudget/Views/TrendsView.swift */,
+				DA0A1B272B0000001A000008 /* FamilyBudget/Views/LimitsSettingsView.swift */,
+				DA0A1B292B0000001A000009 /* FamilyBudget/Views/SubscriptionsView.swift */,
+			);
+			sourceTree = "<group>";
+		};
+		DA0A1B1F2B0000001A000003 = {
+			isa = PBXGroup;
+			children = (
+				DA0A1B2B2B000000001A000A /* FamilyBudget/Services/APIClient.swift */,
+				DA0A1B2D2B000000001A000B /* FamilyBudget/Services/PlaidLinkHandler.swift */,
+				DA0A1B2F2B000000001A000C /* FamilyBudget/Services/DebugManager.swift */,
+			);
+			sourceTree = "<group>";
+		};
+		DA0A1B242B0000001A000004 = {
+			isa = PBXGroup;
+			children = (
+				DA0A1B312B000000001A000D /* FamilyBudget/Models/User.swift */,
+				DA0A1B332B000000001A000E /* FamilyBudget/Models/Transaction.swift */,
+				DA0A1B352B000000001A000F /* FamilyBudget/Models/SpendingLimit.swift */,
+				DA0A1B372B0000001A000010 /* FamilyBudget/Models/Subscription.swift */,
+			);
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -112,12 +131,17 @@
 			buildConfigurationList = DA0A1B3D2B0000001A000000 /* Build configuration list for PBXNativeTarget "FamilyBudget" */;
 			buildPhases = (
 				DA0A1B112B0000001A000000 /* Sources */,
+				DA0A1B402B0000001A000012 /* Resources */,
+				39E449DB2F0A290200BB19D2 /* Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			name = FamilyBudget;
+			packageProductDependencies = (
+				39E449DA2F0A290200BB19D2 /* LinkKit */,
+			);
 			productName = FamilyBudget;
 			productReference = DA0A1B152B0000001A000000 /* FamilyBudget.app */;
 			productType = "com.apple.product-type.application";
@@ -130,7 +154,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1500;
-				LastUpgradeCheck = 1500;
+				LastUpgradeCheck = 2610;
 				TargetAttributes = {
 					DA0A1B142B0000001A000000 = {
 						CreatedOnToolsVersion = 15.0;
@@ -146,6 +170,9 @@
 				Base,
 			);
 			mainGroup = DA0A1B072B0000001A000000;
+			packageReferences = (
+				39E449D82F0A290200BB19D2 /* XCRemoteSwiftPackageReference "plaid-link-ios" */,
+			);
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -154,27 +181,39 @@
 		};
 /* End PBXProject section */
 
+/* Begin PBXResourcesBuildPhase section */
+		DA0A1B402B0000001A000012 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DA0A1B392B0000001A000011 /* FamilyBudget/Resources/Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		DA0A1B112B0000001A000000 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DA0A1B1A2B0000001A000001 /* FamilyBudgetApp.swift in Sources */,
-				DA0A1B1C2B0000001A000002 /* DashboardView.swift in Sources */,
-				DA0A1B1E2B0000001A000003 /* SettingsView.swift in Sources */,
-				DA0A1B202B0000001A000004 /* DeveloperModeView.swift in Sources */,
-				DA0A1B222B0000001A000005 /* CardholderListView.swift in Sources */,
-				DA0A1B242B0000001A000006 /* TransactionListView.swift in Sources */,
-				DA0A1B262B0000001A000007 /* TrendsView.swift in Sources */,
-				DA0A1B282B0000001A000008 /* LimitsSettingsView.swift in Sources */,
-				DA0A1B2A2B0000001A000009 /* SubscriptionsView.swift in Sources */,
-				DA0A1B2C2B000000001A000A /* APIClient.swift in Sources */,
-				DA0A1B2E2B000000001A000B /* PlaidLinkHandler.swift in Sources */,
-				DA0A1B302B000000001A000C /* DebugManager.swift in Sources */,
-				DA0A1B322B000000001A000D /* User.swift in Sources */,
-				DA0A1B342B000000001A000E /* Transaction.swift in Sources */,
-				DA0A1B362B000000001A000F /* SpendingLimit.swift in Sources */,
-				DA0A1B382B0000001A000010 /* Subscription.swift in Sources */,
+				DA0A1B1A2B0000001A000001 /* FamilyBudget/FamilyBudgetApp.swift in Sources */,
+				DA0A1B1C2B0000001A000002 /* FamilyBudget/Views/DashboardView.swift in Sources */,
+				DA0A1B1E2B0000001A000003 /* FamilyBudget/Views/SettingsView.swift in Sources */,
+				DA0A1B202B0000001A000004 /* FamilyBudget/Views/DeveloperModeView.swift in Sources */,
+				DA0A1B222B0000001A000005 /* FamilyBudget/Views/CardholderListView.swift in Sources */,
+				DA0A1B242B0000001A000006 /* FamilyBudget/Views/TransactionListView.swift in Sources */,
+				DA0A1B262B0000001A000007 /* FamilyBudget/Views/TrendsView.swift in Sources */,
+				DA0A1B282B0000001A000008 /* FamilyBudget/Views/LimitsSettingsView.swift in Sources */,
+				DA0A1B2A2B0000001A000009 /* FamilyBudget/Views/SubscriptionsView.swift in Sources */,
+				DA0A1B2C2B000000001A000A /* FamilyBudget/Services/APIClient.swift in Sources */,
+				DA0A1B2E2B000000001A000B /* FamilyBudget/Services/PlaidLinkHandler.swift in Sources */,
+				DA0A1B302B000000001A000C /* FamilyBudget/Services/DebugManager.swift in Sources */,
+				DA0A1B322B000000001A000D /* FamilyBudget/Models/User.swift in Sources */,
+				DA0A1B342B000000001A000E /* FamilyBudget/Models/Transaction.swift in Sources */,
+				DA0A1B362B000000001A000F /* FamilyBudget/Models/SpendingLimit.swift in Sources */,
+				39E449DB2F0A492700BB19D2 /* AppDelegate.swift in Sources */,
+				DA0A1B382B0000001A000010 /* FamilyBudget/Models/Subscription.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -213,8 +252,10 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = 4L29GR7KRH;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_DIALECT = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -226,6 +267,7 @@
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNINITIALIZED_VARS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
@@ -234,6 +276,7 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -271,13 +314,16 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 4L29GR7KRH;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_DIALECT = gnu99;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNINITIALIZED_VARS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
@@ -285,6 +331,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				VALIDATE_PRODUCT = YES;
@@ -296,12 +343,16 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = FamilyBudget/FamilyBudget.entitlements;
 				CODE_SIGN_IDENTITY = "-";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = FamilyBudget/Info.plist;
+				INFOPLIST_KEY_NSAppTransportSecurity_NSAllowsArbitraryLoads = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifestType = UIApplicationSceneManifestType;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UIMainStoryboardFile = "";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLandscapeLeft UIInterfaceOrientationLandscapeLandscapeRight";
@@ -324,12 +375,16 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = FamilyBudget/FamilyBudget.entitlements;
 				CODE_SIGN_IDENTITY = "-";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = FamilyBudget/Info.plist;
+				INFOPLIST_KEY_NSAppTransportSecurity_NSAllowsArbitraryLoads = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifestType = UIApplicationSceneManifestType;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UIMainStoryboardFile = "";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLandscapeLeft UIInterfaceOrientationLandscapeLandscapeRight";
@@ -369,6 +424,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		39E449D82F0A290200BB19D2 /* XCRemoteSwiftPackageReference "plaid-link-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/plaid/plaid-link-ios.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 6.4.2;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		39E449DA2F0A290200BB19D2 /* LinkKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 39E449D82F0A290200BB19D2 /* XCRemoteSwiftPackageReference "plaid-link-ios" */;
+			productName = LinkKit;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = DA0A1B082B0000001A000000 /* Project object */;
 }

@@ -3,6 +3,10 @@
 .env.local
 .env.*.local
 
+# APNs keys (sensitive)
+*.p8
+backend/certs/
+
 # Backend
 backend/node_modules/
 backend/dist/
@@ -42,3 +46,5 @@ dist/
 *.db
 *.sqlite
 *.sqlite3
+photo/
+backend/test-apns.js

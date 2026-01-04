@@ -6,9 +6,10 @@ const db = require('../config/database');
 router.get('/', async (req, res) => {
   try {
     const result = await db.query(`
-      SELECT u.*, ns.alert_mode, ns.threshold_amount
+      SELECT u.*, ns.alert_mode, ns.threshold_amount, sl.monthly_limit, sl.current_spend
       FROM users u
       LEFT JOIN notification_settings ns ON ns.user_id = u.id
+      LEFT JOIN spending_limits sl ON sl.user_id = u.id
       ORDER BY u.id
     `);
     res.json(result.rows);

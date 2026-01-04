@@ -158,6 +158,16 @@ class APIClient {
         return try await request(endpoint: "/api/plaid/cards/\(userId)")
     }
 
+    // MARK: - Push Notifications
+
+    func registerDeviceToken(token: String, userId: Int) async throws {
+        let _: [String: Bool] = try await request(
+            endpoint: "/api/notifications/register-device",
+            method: "POST",
+            body: ["device_token": token, "user_id": userId, "platform": "ios"]
+        )
+    }
+
     // MARK: - Private
 
     private func request<T: Decodable>(endpoint: String, method: String = "GET", body: [String: Any]? = nil) async throws -> T {
@@ -235,7 +245,7 @@ struct ExchangeTokenResponse: Codable {
     let item_id: String?
 }
 
-struct LinkedCard: Codable {
+struct LinkedCard: Codable, Identifiable {
     let id: Int
     let mask: String
     let name: String

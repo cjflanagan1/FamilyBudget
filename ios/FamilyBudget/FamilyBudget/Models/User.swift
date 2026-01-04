@@ -32,6 +32,41 @@ struct User: Codable, Identifiable {
         case createdAt = "created_at"
     }
 
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        id = try container.decode(Int.self, forKey: .id)
+        name = try container.decode(String.self, forKey: .name)
+        role = try container.decode(UserRole.self, forKey: .role)
+        phoneNumber = try container.decodeIfPresent(String.self, forKey: .phoneNumber)
+        alertMode = try container.decodeIfPresent(AlertMode.self, forKey: .alertMode)
+        createdAt = try container.decodeIfPresent(Date.self, forKey: .createdAt)
+
+        // Handle decimal fields as either String or Double (PostgreSQL returns decimals as strings)
+        if let val = try? container.decodeIfPresent(Double.self, forKey: .thresholdAmount) {
+            thresholdAmount = val
+        } else if let str = try? container.decodeIfPresent(String.self, forKey: .thresholdAmount) {
+            thresholdAmount = Double(str)
+        } else {
+            thresholdAmount = nil
+        }
+
+        if let val = try? container.decodeIfPresent(Double.self, forKey: .monthlyLimit) {
+            monthlyLimit = val
+        } else if let str = try? container.decodeIfPresent(String.self, forKey: .monthlyLimit) {
+            monthlyLimit = Double(str)
+        } else {
+            monthlyLimit = nil
+        }
+
+        if let val = try? container.decodeIfPresent(Double.self, forKey: .currentSpend) {
+            currentSpend = val
+        } else if let str = try? container.decodeIfPresent(String.self, forKey: .currentSpend) {
+            currentSpend = Double(str)
+        } else {
+            currentSpend = nil
+        }
+    }
+
     var percentUsed: Double {
         guard let limit = monthlyLimit, let spent = currentSpend, limit > 0 else { return 0 }
         return (spent / limit) * 100

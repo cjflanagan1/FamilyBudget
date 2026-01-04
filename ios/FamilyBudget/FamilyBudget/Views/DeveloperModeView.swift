@@ -134,6 +134,8 @@ struct DeveloperModeView: View {
                 }
             }
         }
+        .scrollContentBackground(.hidden)
+        .background(Color(.systemBackground))
         .navigationTitle("Developer Mode")
         .onAppear {
             customAPIURL = debugManager.apiBaseURL

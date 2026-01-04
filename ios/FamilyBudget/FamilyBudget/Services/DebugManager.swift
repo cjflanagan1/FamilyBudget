@@ -35,7 +35,7 @@ class DebugManager: ObservableObject {
     // API configuration
     var apiBaseURL: String {
         #if DEBUG
-        return UserDefaults.standard.string(forKey: "debug_api_url") ?? "http://localhost:3000"
+        return UserDefaults.standard.string(forKey: "debug_api_url") ?? "http://192.168.1.184:3000"
         #else
         return "https://your-production-api.com"
         #endif
@@ -132,12 +132,21 @@ class DebugManager: ObservableObject {
 }
 
 struct APILog: Identifiable, Codable {
-    let id = UUID()
+    let id: UUID
     let timestamp: Date
     let endpoint: String
     let method: String
     let statusCode: Int
     let response: String?
+
+    init(id: UUID = UUID(), timestamp: Date, endpoint: String, method: String, statusCode: Int, response: String?) {
+        self.id = id
+        self.timestamp = timestamp
+        self.endpoint = endpoint
+        self.method = method
+        self.statusCode = statusCode
+        self.response = response
+    }
 
     var formattedTimestamp: String {
         let formatter = DateFormatter()
@@ -147,5 +156,28 @@ struct APILog: Identifiable, Codable {
 
     var isSuccess: Bool {
         (200...299).contains(statusCode)
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case timestamp, endpoint, method, statusCode, response
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(timestamp, forKey: .timestamp)
+        try container.encode(endpoint, forKey: .endpoint)
+        try container.encode(method, forKey: .method)
+        try container.encode(statusCode, forKey: .statusCode)
+        try container.encode(response, forKey: .response)
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.id = UUID()
+        self.timestamp = try container.decode(Date.self, forKey: .timestamp)
+        self.endpoint = try container.decode(String.self, forKey: .endpoint)
+        self.method = try container.decode(String.self, forKey: .method)
+        self.statusCode = try container.decode(Int.self, forKey: .statusCode)
+        self.response = try container.decode(String?.self, forKey: .response)
     }
 }

@@ -11,6 +11,7 @@ const transactionRoutes = require('./routes/transactions');
 const userRoutes = require('./routes/users');
 const limitRoutes = require('./routes/limits');
 const subscriptionRoutes = require('./routes/subscriptions');
+const notificationRoutes = require('./routes/notifications');
 
 const { syncAllTransactions } = require('./jobs/syncTransactions');
 const { checkUpcomingRenewals } = require('./jobs/checkRenewals');
@@ -37,6 +38,7 @@ app.use('/api/transactions', transactionRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/limits', limitRoutes);
 app.use('/api/subscriptions', subscriptionRoutes);
+app.use('/api/notifications', notificationRoutes);
 
 // Health check
 app.get('/health', (req, res) => {

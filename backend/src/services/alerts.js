@@ -1,5 +1,5 @@
 const db = require('../config/database');
-const { sendSMS, sendPersonalizedSMS } = require('./twilio');
+const { sendPushToParents, sendPushToUser } = require('./push');
 const { isFoodDelivery, getDeliveryServiceName } = require('../utils/merchantDetection');
 
 // Format currency
@@ -83,25 +83,27 @@ async function recordAlert(userId, transactionId, alertType) {
   );
 }
 
-// Process a new transaction and send appropriate alerts
+// Process a new transaction and send appropriate alerts via push notifications
 async function processNewTransaction(transaction, cardholderInfo) {
   const { id: transactionId, amount, merchant_name, is_food_delivery } = transaction;
   const { user_id: cardholderId, name: cardholderName, role: cardholderRole } = cardholderInfo;
 
-  const messages = [];
+  let notificationsSent = 0;
 
   // Get spending status
   const spendingStatus = await getSpendingStatus(cardholderId);
 
-  // 1. Alert to CHILD if food delivery (with red banner)
+  // 1. Alert to CHILD if food delivery
   if (is_food_delivery && cardholderRole === 'child') {
-    const childPhone = await getUserPhone(cardholderId);
-    if (childPhone) {
+    if (!(await wasAlertSent(cardholderId, transactionId, 'child_food_delivery'))) {
       const serviceName = getDeliveryServiceName(merchant_name) || 'Food Delivery';
-      const childMessage = `🔴 FOOD DELIVERY: You spent ${formatCurrency(amount)} at ${serviceName}`;
-
-      messages.push({ to: childPhone, body: childMessage });
+      await sendPushToUser(db, cardholderId, {
+        title: '🔴 Food Delivery Alert',
+        body: `You spent ${formatCurrency(amount)} at ${serviceName}`,
+        data: { type: 'food_delivery', transaction_id: transactionId }
+      });
       await recordAlert(cardholderId, transactionId, 'child_food_delivery');
+      notificationsSent++;
     }
   }
 
@@ -109,13 +111,11 @@ async function processNewTransaction(transaction, cardholderInfo) {
   const parentSettings = await getParentNotificationSettings();
 
   for (const parent of parentSettings) {
-    // Skip if already sent
     if (await wasAlertSent(parent.id, transactionId, 'parent_purchase')) {
       continue;
     }
 
     let shouldSend = false;
-
     switch (parent.alert_mode) {
       case 'all':
         shouldSend = true;
@@ -124,71 +124,65 @@ async function processNewTransaction(transaction, cardholderInfo) {
         shouldSend = amount >= parent.threshold_amount;
         break;
       case 'weekly':
-        // Don't send individual alerts in weekly mode
         shouldSend = false;
         break;
     }
 
     if (shouldSend) {
-      let parentMessage = `[FamilyBudget] ${cardholderName} spent ${formatCurrency(amount)} at ${merchant_name}`;
+      const title = is_food_delivery ? '🔴 Food Delivery' : 'New Purchase';
+      let body = `${cardholderName} spent ${formatCurrency(amount)} at ${merchant_name}`;
 
-      // Add spending status if available
       if (spendingStatus) {
         const percentStr = Math.round(spendingStatus.percent_used);
-        parentMessage += `\nMonthly: ${formatCurrency(spendingStatus.current_spend)} / ${formatCurrency(spendingStatus.monthly_limit)} (${percentStr}%)`;
+        body += ` (${percentStr}% of limit)`;
       }
 
-      // Add food delivery warning for parents too
-      if (is_food_delivery) {
-        parentMessage = `🔴 ${parentMessage}`;
-      }
-
-      messages.push({ to: parent.phone_number, body: parentMessage });
+      await sendPushToUser(db, parent.id, {
+        title,
+        body,
+        data: { type: 'purchase', transaction_id: transactionId, user_id: cardholderId }
+      });
       await recordAlert(parent.id, transactionId, 'parent_purchase');
+      notificationsSent++;
     }
   }
 
   // 3. Check for spending limit warnings (90% threshold)
   if (spendingStatus && spendingStatus.percent_used >= 90 && spendingStatus.percent_used < 100) {
-    const parentPhones = await getParentPhones();
-
-    for (const phone of parentPhones) {
-      const warningMessage = `[FamilyBudget] ⚠️ ${cardholderName} is at ${Math.round(spendingStatus.percent_used)}% of monthly limit\n${formatCurrency(spendingStatus.current_spend)} / ${formatCurrency(spendingStatus.monthly_limit)} - ${formatCurrency(spendingStatus.remaining)} remaining`;
-
-      // Only send if we haven't sent a 90% warning this month
-      const warningKey = `limit_warning_90_${new Date().getMonth()}`;
-      if (!(await wasAlertSent(cardholderId, transactionId, warningKey))) {
-        messages.push({ to: phone, body: warningMessage });
-        await recordAlert(cardholderId, transactionId, warningKey);
-      }
+    const warningKey = `limit_warning_90_${new Date().getMonth()}`;
+    if (!(await wasAlertSent(cardholderId, transactionId, warningKey))) {
+      await sendPushToParents(db, {
+        title: '⚠️ Spending Limit Warning',
+        body: `${cardholderName} is at ${Math.round(spendingStatus.percent_used)}% of monthly limit (${formatCurrency(spendingStatus.remaining)} remaining)`,
+        data: { type: 'limit_warning', user_id: cardholderId }
+      });
+      await recordAlert(cardholderId, transactionId, warningKey);
+      notificationsSent++;
     }
   }
 
   // 4. Check for over-limit alert
   if (spendingStatus && spendingStatus.percent_used >= 100) {
-    const parentPhones = await getParentPhones();
-
-    for (const phone of parentPhones) {
-      const overMessage = `[FamilyBudget] 🚨 ${cardholderName} has EXCEEDED monthly limit!\n${formatCurrency(spendingStatus.current_spend)} / ${formatCurrency(spendingStatus.monthly_limit)} (${Math.round(spendingStatus.percent_used)}%)`;
-
-      const overKey = `limit_exceeded_${new Date().getMonth()}`;
-      if (!(await wasAlertSent(cardholderId, transactionId, overKey))) {
-        messages.push({ to: phone, body: overMessage });
-        await recordAlert(cardholderId, transactionId, overKey);
-      }
+    const overKey = `limit_exceeded_${new Date().getMonth()}`;
+    if (!(await wasAlertSent(cardholderId, transactionId, overKey))) {
+      await sendPushToParents(db, {
+        title: '🚨 Limit Exceeded!',
+        body: `${cardholderName} has exceeded their monthly limit! ${formatCurrency(spendingStatus.current_spend)} / ${formatCurrency(spendingStatus.monthly_limit)}`,
+        data: { type: 'limit_exceeded', user_id: cardholderId }
+      });
+      await recordAlert(cardholderId, transactionId, overKey);
+      notificationsSent++;
     }
   }
 
-  // Send all messages
-  if (messages.length > 0) {
-    await sendPersonalizedSMS(messages);
-    console.log(`Sent ${messages.length} alerts for transaction ${transactionId}`);
+  if (notificationsSent > 0) {
+    console.log(`[Alerts] Sent ${notificationsSent} push notifications for transaction ${transactionId}`);
   }
 
-  return messages.length;
+  return notificationsSent;
 }
 
-// Send subscription renewal reminder
+// Send subscription renewal reminder via push
 async function sendRenewalReminder(subscription) {
   const { merchant_name, amount, next_renewal_date, user_id } = subscription;
 
@@ -196,12 +190,13 @@ async function sendRenewalReminder(subscription) {
   const userResult = await db.query('SELECT name FROM users WHERE id = $1', [user_id]);
   const cardholderName = userResult.rows[0]?.name || 'Unknown';
 
-  // Send to parents
-  const parentPhones = await getParentPhones();
-  const message = `[FamilyBudget] Renewal in 3 days:\n${merchant_name} - ${formatCurrency(amount)} (${cardholderName}'s card)`;
+  await sendPushToParents(db, {
+    title: '📅 Subscription Renewal',
+    body: `${merchant_name} (${formatCurrency(amount)}) renews in 3 days - ${cardholderName}'s card`,
+    data: { type: 'subscription_renewal', subscription_id: subscription.id }
+  });
 
-  await sendSMSToMany(parentPhones, message);
-  console.log(`Sent renewal reminder for ${merchant_name}`);
+  console.log(`[Alerts] Sent renewal reminder for ${merchant_name}`);
 }
 
 module.exports = {

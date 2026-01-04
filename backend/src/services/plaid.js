@@ -20,6 +20,7 @@ async function createLinkToken(userId) {
     products: ['transactions'],
     country_codes: ['US'],
     language: 'en',
+    redirect_uri: 'https://cdn.plaid.com/link/v2/stable/sandbox-oauth-a2a-redirect.html',
   });
   return response.data;
 }

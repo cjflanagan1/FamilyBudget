@@ -2,285 +2,174 @@ import SwiftUI
 
 struct SettingsView: View {
     @StateObject private var viewModel = SettingsViewModel()
-    @ObservedObject private var debugManager = DebugManager.shared
-
     @State private var versionTapCount = 0
-    @State private var showDeveloperMode = false
+    @State private var showDevMode = false
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             List {
-                // Family members section
-                Section("Family Members") {
+                Section("Family") {
                     ForEach(viewModel.users) { user in
-                        NavigationLink {
+                        NavigationLink(user.name) {
                             UserSettingsView(user: user)
-                        } label: {
-                            HStack {
-                                Text(debugManager.anonymizeNames ? "Person \(user.id)" : user.name)
-                                Spacer()
-                                if user.role == .parent {
-                                    Text("Parent")
-                                        .font(.caption)
-                                        .foregroundColor(.secondary)
-                                }
-                            }
                         }
                     }
                 }
 
-                // Notification settings (parents only)
-                Section("Notifications") {
-                    NavigationLink("Notification Preferences") {
-                        NotificationSettingsView()
-                    }
+                Section("Cards") {
+                    NavigationLink("Linked Cards") { LinkedCardsView() }
                 }
 
-                // Linked cards
-                Section("Linked Cards") {
-                    NavigationLink("Manage Cards") {
-                        LinkedCardsView()
-                    }
-                }
-
-                // About section
                 Section("About") {
                     HStack {
                         Text("Version")
                         Spacer()
-                        Text("1.0.0")
-                            .foregroundColor(.secondary)
+                        Text("1.0.0").foregroundStyle(.secondary)
                             .onTapGesture {
                                 versionTapCount += 1
                                 if versionTapCount >= 7 {
-                                    debugManager.isDebugMode = true
-                                    showDeveloperMode = true
+                                    DebugManager.shared.isDebugMode = true
+                                    showDevMode = true
                                     versionTapCount = 0
                                 }
                             }
                     }
-
-                    if debugManager.isDebugMode {
-                        NavigationLink {
-                            DeveloperModeView()
-                        } label: {
-                            HStack {
-                                Image(systemName: "hammer.fill")
-                                    .foregroundColor(.orange)
-                                Text("Developer Mode")
-                            }
-                        }
+                    if DebugManager.shared.isDebugMode {
+                        NavigationLink("Developer") { DeveloperModeView() }
                     }
                 }
             }
+            .listStyle(.insetGrouped)
             .navigationTitle("Settings")
-            .onAppear {
-                viewModel.loadUsers()
-            }
-            .alert("Developer Mode Enabled", isPresented: $showDeveloperMode) {
-                Button("OK", role: .cancel) { }
-            } message: {
-                Text("You now have access to developer options.")
-            }
+            .onAppear { viewModel.loadUsers() }
+            .alert("Developer Mode", isPresented: $showDevMode) { Button("OK") {} }
         }
     }
 }
 
 struct UserSettingsView: View {
     let user: User
-    @State private var monthlyLimit: String = ""
-    @State private var phoneNumber: String = ""
-    @State private var isSaving = false
+    @State private var limit = ""
+    @State private var phone = ""
     @Environment(\.dismiss) var dismiss
 
     var body: some View {
         Form {
             Section("Spending Limit") {
-                TextField("Monthly Limit", text: $monthlyLimit)
+                TextField("Monthly Limit", text: $limit)
                     .keyboardType(.decimalPad)
-
-                if let current = user.currentSpend {
-                    HStack {
-                        Text("Current Spending")
-                        Spacer()
-                        Text(current.formatted(.currency(code: "USD")))
-                            .foregroundColor(.secondary)
-                    }
-                }
             }
-
             Section("Contact") {
-                TextField("Phone Number", text: $phoneNumber)
+                TextField("Phone", text: $phone)
                     .keyboardType(.phonePad)
             }
-
             Section {
-                Button("Save Changes") {
-                    saveChanges()
+                Button("Save") {
+                    Task {
+                        // Strip non-numeric characters except decimal point
+                        let cleanLimit = limit.filter { $0.isNumber || $0 == "." }
+                        if let l = Double(cleanLimit), l > 0 {
+                            _ = try? await APIClient.shared.updateSpendingLimit(userId: user.id, monthlyLimit: l)
+                        }
+                        if !phone.isEmpty {
+                            _ = try? await APIClient.shared.updateUserPhone(id: user.id, phone: phone)
+                        }
+                        dismiss()
+                    }
                 }
-                .disabled(isSaving)
             }
         }
         .navigationTitle(user.name)
         .onAppear {
-            monthlyLimit = user.monthlyLimit?.formatted() ?? ""
-            phoneNumber = user.phoneNumber ?? ""
-        }
-    }
-
-    private func saveChanges() {
-        isSaving = true
-        Task {
-            do {
-                if let limit = Double(monthlyLimit) {
-                    let _ = try await APIClient.shared.updateSpendingLimit(userId: user.id, monthlyLimit: limit)
-                }
-                if !phoneNumber.isEmpty {
-                    let _ = try await APIClient.shared.updateUserPhone(id: user.id, phone: phoneNumber)
-                }
-                await MainActor.run {
-                    dismiss()
-                }
-            } catch {
-                print("Error saving: \(error)")
+            if let ml = user.monthlyLimit {
+                limit = String(format: "%.0f", ml)
             }
-            await MainActor.run {
-                isSaving = false
-            }
-        }
-    }
-}
-
-struct NotificationSettingsView: View {
-    @State private var alertMode = "all"
-    @State private var thresholdAmount = "25"
-    @State private var parentUsers: [User] = []
-
-    var body: some View {
-        Form {
-            Section("Alert Mode") {
-                Picker("When to send alerts", selection: $alertMode) {
-                    Text("Every Purchase").tag("all")
-                    Text("Weekly Summary").tag("weekly")
-                    Text("Above Threshold").tag("threshold")
-                }
-                .pickerStyle(.inline)
-            }
-
-            if alertMode == "threshold" {
-                Section("Threshold Amount") {
-                    HStack {
-                        Text("$")
-                        TextField("Amount", text: $thresholdAmount)
-                            .keyboardType(.decimalPad)
-                    }
-                    Text("You'll only be notified for purchases above this amount")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                }
-            }
-
-            Section {
-                Button("Save") {
-                    saveSettings()
-                }
-            }
-        }
-        .navigationTitle("Notifications")
-        .onAppear {
-            loadParentUsers()
-        }
-    }
-
-    private func loadParentUsers() {
-        Task {
-            do {
-                let users = try await APIClient.shared.getUsers()
-                await MainActor.run {
-                    parentUsers = users.filter { $0.role == .parent }
-                    if let first = parentUsers.first {
-                        alertMode = first.alertMode?.rawValue ?? "all"
-                        thresholdAmount = first.thresholdAmount?.formatted() ?? "25"
-                    }
-                }
-            } catch {
-                print("Error loading users: \(error)")
-            }
-        }
-    }
-
-    private func saveSettings() {
-        Task {
-            for parent in parentUsers {
-                try? await APIClient.shared.updateNotificationSettings(
-                    id: parent.id,
-                    alertMode: alertMode,
-                    threshold: Double(thresholdAmount)
-                )
-            }
+            phone = user.phoneNumber ?? ""
         }
     }
 }
 
 struct LinkedCardsView: View {
-    @State private var cards: [[String: Any]] = []
+    @StateObject private var viewModel = LinkedCardsViewModel()
 
     var body: some View {
         List {
             Section {
-                Button {
-                    // Would trigger Plaid Link
-                } label: {
-                    HStack {
-                        Image(systemName: "plus.circle.fill")
-                            .foregroundColor(.green)
-                        Text("Link New Card")
-                    }
+                NavigationLink("Link New Card") {
+                    PlaidLinkView(userId: 1) { viewModel.loadCards(userId: 1) }
                 }
             }
-
-            Section("Linked Cards") {
-                if cards.isEmpty {
-                    Text("No cards linked yet")
-                        .foregroundColor(.secondary)
-                } else {
-                    ForEach(0..<cards.count, id: \.self) { index in
-                        let card = cards[index]
-                        HStack {
-                            Image(systemName: "creditcard.fill")
-                                .foregroundColor(.blue)
-                            VStack(alignment: .leading) {
-                                Text(card["nickname"] as? String ?? "Card")
-                                Text("•••• \(card["last_four"] as? String ?? "****")")
-                                    .font(.caption)
-                                    .foregroundColor(.secondary)
-                            }
-                        }
+            Section("Cards") {
+                ForEach(viewModel.cards) { card in
+                    HStack {
+                        Image(systemName: "creditcard.fill").foregroundStyle(.blue)
+                        Text(card.name)
+                        Spacer()
+                        Text("•••• \(card.mask)").foregroundStyle(.secondary)
                     }
                 }
             }
         }
-        .navigationTitle("Linked Cards")
+        .listStyle(.insetGrouped)
+        .navigationTitle("Cards")
+        .onAppear { viewModel.loadCards(userId: 1) }
+    }
+}
+
+struct PlaidLinkView: View {
+    let userId: Int
+    let onSuccess: () -> Void
+    @StateObject private var handler = PlaidLinkHandler.shared
+    @Environment(\.dismiss) var dismiss
+
+    var body: some View {
+        VStack(spacing: 20) {
+            Spacer()
+            Text("Link Bank Account").font(.title2).fontWeight(.bold)
+            Text("Connect your cards to track spending").foregroundStyle(.secondary)
+            Spacer()
+            Button {
+                if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+                   let vc = scene.windows.first?.rootViewController {
+                    handler.startLink(for: userId, from: vc)
+                }
+            } label: {
+                Text(handler.isLinking ? "Connecting..." : "Connect")
+                    .frame(maxWidth: .infinity).padding()
+                    .background(Color.blue).foregroundStyle(.white).cornerRadius(10)
+            }
+            .disabled(handler.isLinking)
+            .padding(.horizontal)
+            Spacer()
+        }
+        .navigationTitle("Link Card")
+        .alert("Success!", isPresented: Binding(get: { handler.linkedSuccessfully }, set: { _ in handler.linkedSuccessfully = false; onSuccess(); dismiss() })) { Button("OK") {} }
+        .alert("Error", isPresented: Binding(get: { handler.linkError != nil }, set: { _ in handler.linkError = nil })) { Button("OK") {} } message: { Text(handler.linkError ?? "") }
+    }
+}
+
+class LinkedCardsViewModel: ObservableObject {
+    @Published var cards: [LinkedCard] = []
+    func loadCards(userId: Int) {
+        Task {
+            do {
+                let c = try await APIClient.shared.getLinkedCards(userId: userId)
+                await MainActor.run { cards = c }
+            } catch { print("Error: \(error)") }
+        }
     }
 }
 
 class SettingsViewModel: ObservableObject {
     @Published var users: [User] = []
-
     func loadUsers() {
         Task {
             do {
-                let fetchedUsers = try await APIClient.shared.getUsers()
-                await MainActor.run {
-                    self.users = fetchedUsers
-                }
-            } catch {
-                print("Error loading users: \(error)")
-            }
+                let u = try await APIClient.shared.getUsers()
+                await MainActor.run { users = u }
+            } catch { print("Error: \(error)") }
         }
     }
 }
 
-#Preview {
-    SettingsView()
-}
+#Preview { SettingsView() }

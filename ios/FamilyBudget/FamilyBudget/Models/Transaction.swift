@@ -31,6 +31,29 @@ struct Transaction: Codable, Identifiable {
         case lastFour = "last_four"
     }
 
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        id = try container.decode(Int.self, forKey: .id)
+        cardId = try container.decode(Int.self, forKey: .cardId)
+        plaidTransactionId = try container.decodeIfPresent(String.self, forKey: .plaidTransactionId)
+        merchantName = try container.decodeIfPresent(String.self, forKey: .merchantName)
+        category = try container.decodeIfPresent(String.self, forKey: .category)
+        date = try container.decode(Date.self, forKey: .date)
+        isRecurring = try container.decodeIfPresent(Bool.self, forKey: .isRecurring) ?? false
+        isFoodDelivery = try container.decodeIfPresent(Bool.self, forKey: .isFoodDelivery) ?? false
+        createdAt = try container.decodeIfPresent(Date.self, forKey: .createdAt)
+        cardholderName = try container.decodeIfPresent(String.self, forKey: .cardholderName)
+        lastFour = try container.decodeIfPresent(String.self, forKey: .lastFour)
+
+        if let val = try? container.decode(Double.self, forKey: .amount) {
+            amount = val
+        } else if let str = try? container.decode(String.self, forKey: .amount) {
+            amount = Double(str) ?? 0
+        } else {
+            amount = 0
+        }
+    }
+
     var formattedAmount: String {
         let formatter = NumberFormatter()
         formatter.numberStyle = .currency
@@ -68,6 +91,30 @@ struct SpendingSummary: Codable, Identifiable {
         case transactionCount = "transaction_count"
     }
 
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        userId = try container.decode(Int.self, forKey: .userId)
+        name = try container.decode(String.self, forKey: .name)
+        role = try container.decode(String.self, forKey: .role)
+        transactionCount = try container.decode(Int.self, forKey: .transactionCount)
+
+        if let val = try? container.decode(Double.self, forKey: .totalSpent) {
+            totalSpent = val
+        } else if let str = try? container.decode(String.self, forKey: .totalSpent) {
+            totalSpent = Double(str) ?? 0
+        } else {
+            totalSpent = 0
+        }
+
+        if let val = try? container.decodeIfPresent(Double.self, forKey: .monthlyLimit) {
+            monthlyLimit = val
+        } else if let str = try container.decodeIfPresent(String.self, forKey: .monthlyLimit) {
+            monthlyLimit = Double(str)
+        } else {
+            monthlyLimit = nil
+        }
+    }
+
     var percentUsed: Double {
         guard let limit = monthlyLimit, limit > 0 else { return 0 }
         return (totalSpent / limit) * 100
@@ -85,6 +132,23 @@ struct CategorySpend: Codable, Identifiable {
     let category: String
     let total: Double
     let count: Int
+
+    enum CodingKeys: String, CodingKey {
+        case category, total, count
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        category = try container.decode(String.self, forKey: .category)
+        count = try container.decode(Int.self, forKey: .count)
+        if let val = try? container.decode(Double.self, forKey: .total) {
+            total = val
+        } else if let str = try? container.decode(String.self, forKey: .total) {
+            total = Double(str) ?? 0
+        } else {
+            total = 0
+        }
+    }
 }
 
 // Top merchant
@@ -98,5 +162,18 @@ struct TopMerchant: Codable, Identifiable {
         case merchantName = "merchant_name"
         case total
         case count
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        merchantName = try container.decode(String.self, forKey: .merchantName)
+        count = try container.decode(Int.self, forKey: .count)
+        if let val = try? container.decode(Double.self, forKey: .total) {
+            total = val
+        } else if let str = try? container.decode(String.self, forKey: .total) {
+            total = Double(str) ?? 0
+        } else {
+            total = 0
+        }
     }
 }

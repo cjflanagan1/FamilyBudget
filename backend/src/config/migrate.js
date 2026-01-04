@@ -78,6 +78,18 @@ CREATE TABLE IF NOT EXISTS alerts_sent (
   UNIQUE(user_id, transaction_id, alert_type)
 );
 
+-- Device tokens for push notifications
+CREATE TABLE IF NOT EXISTS device_tokens (
+  id SERIAL PRIMARY KEY,
+  user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+  device_token VARCHAR(255) NOT NULL,
+  platform VARCHAR(20) DEFAULT 'ios',
+  is_active BOOLEAN DEFAULT TRUE,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE(device_token)
+);
+
 -- Indexes for performance
 CREATE INDEX IF NOT EXISTS idx_transactions_date ON transactions(date);
 CREATE INDEX IF NOT EXISTS idx_transactions_card_id ON transactions(card_id);

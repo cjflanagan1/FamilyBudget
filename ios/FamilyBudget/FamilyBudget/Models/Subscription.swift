@@ -31,6 +31,27 @@ struct Subscription: Codable, Identifiable {
         case cardholderName = "cardholder_name"
     }
 
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        id = try container.decode(Int.self, forKey: .id)
+        userId = try container.decode(Int.self, forKey: .userId)
+        merchantName = try container.decode(String.self, forKey: .merchantName)
+        billingCycle = try container.decode(BillingCycle.self, forKey: .billingCycle)
+        nextRenewalDate = try container.decodeIfPresent(Date.self, forKey: .nextRenewalDate)
+        isActive = try container.decode(Bool.self, forKey: .isActive)
+        createdAt = try container.decodeIfPresent(Date.self, forKey: .createdAt)
+        cardholderName = try container.decodeIfPresent(String.self, forKey: .cardholderName)
+
+        // Handle amount as either String or Double
+        if let val = try? container.decode(Double.self, forKey: .amount) {
+            amount = val
+        } else if let str = try? container.decode(String.self, forKey: .amount) {
+            amount = Double(str) ?? 0
+        } else {
+            amount = 0
+        }
+    }
+
     var formattedAmount: String {
         let formatter = NumberFormatter()
         formatter.numberStyle = .currency
@@ -77,5 +98,18 @@ struct SubscriptionTotal: Codable {
     enum CodingKeys: String, CodingKey {
         case monthlyTotal = "monthly_total"
         case subscriptionCount = "subscription_count"
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        subscriptionCount = try container.decode(Int.self, forKey: .subscriptionCount)
+
+        if let val = try? container.decodeIfPresent(Double.self, forKey: .monthlyTotal) {
+            monthlyTotal = val
+        } else if let str = try container.decodeIfPresent(String.self, forKey: .monthlyTotal) {
+            monthlyTotal = Double(str)
+        } else {
+            monthlyTotal = nil
+        }
     }
 }
