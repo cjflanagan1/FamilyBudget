@@ -86,33 +86,37 @@ router.get('/status/all', async (req, res) => {
         u.id,
         u.name,
         u.role,
-        sl.monthly_limit,
-        COALESCE(
+        CAST(sl.monthly_limit AS NUMERIC) as monthly_limit,
+        CAST(COALESCE(
           (SELECT SUM(t.amount)
            FROM transactions t
            JOIN cards c ON t.card_id = c.id
            WHERE c.user_id = u.id
              AND t.date >= date_trunc('month', CURRENT_DATE)),
           0
-        ) as current_spend
+        ) AS NUMERIC) as current_spend
       FROM users u
       LEFT JOIN spending_limits sl ON sl.user_id = u.id
       ORDER BY u.id
     `);
 
     const status = result.rows.map((row) => ({
-      ...row,
+      id: row.id,
+      name: row.name,
+      role: row.role,
+      monthly_limit: row.monthly_limit ? parseFloat(row.monthly_limit) : null,
+      current_spend: parseFloat(row.current_spend),
       percent_used: row.monthly_limit
-        ? Math.round((row.current_spend / row.monthly_limit) * 1000) / 10
+        ? Math.round((parseFloat(row.current_spend) / parseFloat(row.monthly_limit)) * 1000) / 10
         : 0,
       remaining: row.monthly_limit
-        ? row.monthly_limit - row.current_spend
+        ? parseFloat(row.monthly_limit) - parseFloat(row.current_spend)
         : 0,
       is_warning: row.monthly_limit
-        ? row.current_spend >= row.monthly_limit * 0.9
+        ? parseFloat(row.current_spend) >= parseFloat(row.monthly_limit) * 0.9
         : false,
       is_over: row.monthly_limit
-        ? row.current_spend > row.monthly_limit
+        ? parseFloat(row.current_spend) > parseFloat(row.monthly_limit)
         : false,
     }));
 

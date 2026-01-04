@@ -47,28 +47,38 @@ struct ContentView: View {
         TabView {
             DashboardView()
                 .tabItem {
-                    Label("Dashboard", systemImage: "chart.pie")
+                    Image(systemName: "chart.pie.fill")
+                    Text("Home")
                 }
 
             CardholderListView()
                 .tabItem {
-                    Label("Family", systemImage: "person.3")
+                    Image(systemName: "person.2.fill")
+                    Text("Family")
                 }
 
             TransactionListView()
                 .tabItem {
-                    Label("Transactions", systemImage: "list.bullet.rectangle")
+                    Image(systemName: "list.bullet")
+                    Text("Txns")
                 }
 
             SubscriptionsView()
                 .tabItem {
-                    Label("Subscriptions", systemImage: "repeat")
+                    Image(systemName: "repeat")
+                    Text("Subs")
                 }
 
             SettingsView()
                 .tabItem {
-                    Label("Settings", systemImage: "gear")
+                    Image(systemName: "gear.fill")
+                    Text("More")
                 }
+        }
+        .onAppear {
+            let appearance = UITabBarAppearance()
+            appearance.configureWithDefaultBackground()
+            UITabBar.appearance().standardAppearance = appearance
         }
     }
 }
