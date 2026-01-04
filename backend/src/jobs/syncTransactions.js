@@ -32,22 +32,27 @@ async function syncCardTransactions(card) {
     for (const txn of added) {
       const category = categorizeTransaction(txn.merchant_name, txn.personal_finance_category?.primary);
 
+      // Plaid: positive = charge, negative = refund/credit
+      const isRefund = txn.amount < 0;
+      const amount = Math.abs(txn.amount);
+
       // Insert transaction
       const result = await db.query(
         `INSERT INTO transactions
-         (card_id, plaid_transaction_id, amount, merchant_name, category, date, is_recurring, is_food_delivery)
-         VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+         (card_id, plaid_transaction_id, amount, merchant_name, category, date, is_recurring, is_food_delivery, is_refund)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
          ON CONFLICT (plaid_transaction_id) DO NOTHING
          RETURNING *`,
         [
           cardId,
           txn.transaction_id,
-          Math.abs(txn.amount), // Plaid returns negative for charges
+          amount,
           txn.merchant_name || txn.name,
-          category.category,
+          isRefund ? 'Refund' : category.category,
           txn.date,
           txn.personal_finance_category?.detailed === 'SUBSCRIPTION',
           category.is_food_delivery,
+          isRefund,
         ]
       );
 
@@ -61,6 +66,7 @@ async function syncCardTransactions(card) {
     // Process modified transactions (update existing)
     for (const txn of modified) {
       const category = categorizeTransaction(txn.merchant_name, txn.personal_finance_category?.primary);
+      const isRefund = txn.amount < 0;
 
       await db.query(
         `UPDATE transactions SET
@@ -68,14 +74,16 @@ async function syncCardTransactions(card) {
            merchant_name = $2,
            category = $3,
            date = $4,
-           is_food_delivery = $5
-         WHERE plaid_transaction_id = $6`,
+           is_food_delivery = $5,
+           is_refund = $6
+         WHERE plaid_transaction_id = $7`,
         [
           Math.abs(txn.amount),
           txn.merchant_name || txn.name,
-          category.category,
+          isRefund ? 'Refund' : category.category,
           txn.date,
           category.is_food_delivery,
+          isRefund,
           txn.transaction_id,
         ]
       );

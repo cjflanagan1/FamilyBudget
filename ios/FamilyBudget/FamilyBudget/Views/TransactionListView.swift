@@ -29,12 +29,12 @@ struct TransactionListView: View {
                         ForEach(filteredTransactions) { txn in
                             HStack(spacing: 10) {
                                 Circle()
-                                    .fill(txn.isFoodDelivery ? Color.red.opacity(0.2) : Color.blue.opacity(0.2))
+                                    .fill(txn.isRefund ? Color.green.opacity(0.2) : (txn.isFoodDelivery ? Color.red.opacity(0.2) : Color.blue.opacity(0.2)))
                                     .frame(width: 36, height: 36)
                                     .overlay(
-                                        Image(systemName: "creditcard")
+                                        Image(systemName: txn.isRefund ? "arrow.down.circle" : "creditcard")
                                             .font(.caption)
-                                            .foregroundStyle(txn.isFoodDelivery ? .red : .blue)
+                                            .foregroundStyle(txn.isRefund ? .green : (txn.isFoodDelivery ? .red : .blue))
                                     )
 
                                 VStack(alignment: .leading, spacing: 2) {
@@ -50,6 +50,7 @@ struct TransactionListView: View {
 
                                 Text(txn.formattedAmount)
                                     .font(.subheadline)
+                                    .foregroundStyle(txn.isRefund ? .green : .primary)
                             }
                         }
                     }

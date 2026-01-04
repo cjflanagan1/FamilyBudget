@@ -10,6 +10,7 @@ struct Transaction: Codable, Identifiable {
     let date: Date
     let isRecurring: Bool
     let isFoodDelivery: Bool
+    let isRefund: Bool
     let createdAt: Date?
 
     // Joined fields
@@ -26,6 +27,7 @@ struct Transaction: Codable, Identifiable {
         case date
         case isRecurring = "is_recurring"
         case isFoodDelivery = "is_food_delivery"
+        case isRefund = "is_refund"
         case createdAt = "created_at"
         case cardholderName = "cardholder_name"
         case lastFour = "last_four"
@@ -41,6 +43,7 @@ struct Transaction: Codable, Identifiable {
         date = try container.decode(Date.self, forKey: .date)
         isRecurring = try container.decodeIfPresent(Bool.self, forKey: .isRecurring) ?? false
         isFoodDelivery = try container.decodeIfPresent(Bool.self, forKey: .isFoodDelivery) ?? false
+        isRefund = try container.decodeIfPresent(Bool.self, forKey: .isRefund) ?? false
         createdAt = try container.decodeIfPresent(Date.self, forKey: .createdAt)
         cardholderName = try container.decodeIfPresent(String.self, forKey: .cardholderName)
         lastFour = try container.decodeIfPresent(String.self, forKey: .lastFour)
@@ -58,7 +61,8 @@ struct Transaction: Codable, Identifiable {
         let formatter = NumberFormatter()
         formatter.numberStyle = .currency
         formatter.currencyCode = "USD"
-        return formatter.string(from: NSNumber(value: amount)) ?? "$\(amount)"
+        let amountStr = formatter.string(from: NSNumber(value: amount)) ?? "$\(amount)"
+        return isRefund ? "+\(amountStr)" : amountStr
     }
 
     var formattedDate: String {

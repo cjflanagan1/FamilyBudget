@@ -33,6 +33,7 @@ CREATE TABLE IF NOT EXISTS transactions (
   date DATE NOT NULL,
   is_recurring BOOLEAN DEFAULT FALSE,
   is_food_delivery BOOLEAN DEFAULT FALSE,
+  is_refund BOOLEAN DEFAULT FALSE,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
