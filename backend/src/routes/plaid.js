@@ -11,8 +11,11 @@ router.post('/create-link-token', async (req, res) => {
     const linkToken = await plaidService.createLinkToken(userId);
     res.json(linkToken);
   } catch (err) {
-    console.error('Error creating link token:', err);
-    res.status(500).json({ error: 'Failed to create link token' });
+    console.error('Error creating link token:', err.response?.data || err.message || err);
+    res.status(500).json({
+      error: 'Failed to create link token',
+      details: err.response?.data?.error_message || err.message
+    });
   }
 });
 
@@ -33,19 +36,37 @@ router.post('/exchange-token', async (req, res) => {
       (acc) => acc.subtype === 'credit card' || acc.type === 'credit'
     ) || accounts[0];
 
-    // Save card to database
-    const result = await db.query(
-      `INSERT INTO cards (user_id, plaid_account_id, plaid_access_token, last_four, nickname)
-       VALUES ($1, $2, $3, $4, $5)
-       RETURNING *`,
-      [
-        userId,
-        amexAccount.account_id,
-        accessToken,
-        amexAccount.mask,
-        amexAccount.name,
-      ]
+    // Check if card with same last_four already exists for this user
+    const existing = await db.query(
+      'SELECT id FROM cards WHERE last_four = $1',
+      [amexAccount.mask]
     );
+
+    let result;
+    if (existing.rows.length > 0) {
+      const cardId = existing.rows[0].id;
+
+      // Delete old transactions - Plaid generates new IDs on re-link causing duplicates
+      await db.query('DELETE FROM transactions WHERE card_id = $1', [cardId]);
+      console.log(`Deleted transactions for card ${cardId} before re-link`);
+
+      // Update existing card with new access token and RESET sync cursor
+      result = await db.query(
+        `UPDATE cards SET plaid_access_token = $1, plaid_account_id = $2, user_id = $3, sync_cursor = NULL
+         WHERE id = $4 RETURNING *`,
+        [accessToken, amexAccount.account_id, userId, cardId]
+      );
+      console.log(`Updated existing card ${cardId} - cursor reset`);
+    } else {
+      // Insert new card
+      result = await db.query(
+        `INSERT INTO cards (user_id, plaid_account_id, plaid_access_token, last_four, nickname)
+         VALUES ($1, $2, $3, $4, $5)
+         RETURNING *`,
+        [userId, amexAccount.account_id, accessToken, amexAccount.mask, amexAccount.name]
+      );
+      console.log(`Created new card ${result.rows[0].id}`);
+    }
 
     res.json({ success: true, card: result.rows[0] });
   } catch (err) {
@@ -100,6 +121,59 @@ router.delete('/cards/:cardId', async (req, res) => {
   } catch (err) {
     console.error('Error removing card:', err);
     res.status(500).json({ error: 'Failed to remove card' });
+  }
+});
+
+// Get card balances from Plaid
+router.get('/balances', async (req, res) => {
+  try {
+    const cards = await db.query('SELECT id, plaid_access_token, plaid_account_id, nickname, last_four FROM cards');
+    const balances = [];
+
+    for (const card of cards.rows) {
+      try {
+        const accounts = await plaidService.getAccounts(card.plaid_access_token);
+        const account = accounts.find(a => a.account_id === card.plaid_account_id) || accounts[0];
+
+        let paymentDue = null;
+        let minimumPayment = null;
+        let nextPaymentDate = null;
+
+        // Try to get liabilities for payment due info
+        try {
+          const liabilities = await plaidService.getLiabilities(card.plaid_access_token);
+          const creditCard = liabilities.credit?.find(c => c.account_id === card.plaid_account_id);
+          if (creditCard) {
+            paymentDue = creditCard.last_statement_balance;
+            minimumPayment = creditCard.minimum_payment_amount;
+            nextPaymentDate = creditCard.next_payment_due_date;
+          }
+        } catch (e) {
+          // Liabilities not available for this card
+        }
+
+        if (account) {
+          balances.push({
+            card_id: card.id,
+            nickname: card.nickname,
+            last_four: card.last_four,
+            current_balance: account.balances.current,
+            available_credit: account.balances.available,
+            credit_limit: account.balances.limit,
+            payment_due: paymentDue,
+            minimum_payment: minimumPayment,
+            next_payment_date: nextPaymentDate
+          });
+        }
+      } catch (e) {
+        console.error(`Error fetching balance for card ${card.id}:`, e.message);
+      }
+    }
+
+    res.json(balances);
+  } catch (err) {
+    console.error('Error fetching balances:', err);
+    res.status(500).json({ error: 'Failed to fetch balances' });
   }
 });
 

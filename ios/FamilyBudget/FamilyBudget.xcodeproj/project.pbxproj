@@ -26,7 +26,43 @@
 		DA0A1B362B000000001A000F /* FamilyBudget/Models/SpendingLimit.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0A1B352B000000001A000F /* FamilyBudget/Models/SpendingLimit.swift */; };
 		DA0A1B382B0000001A000010 /* FamilyBudget/Models/Subscription.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0A1B372B0000001A000010 /* FamilyBudget/Models/Subscription.swift */; };
 		DA0A1B392B0000001A000011 /* FamilyBudget/Resources/Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DA0A1B3A2B0000001A000011 /* FamilyBudget/Resources/Assets.xcassets */; };
+		WATCH0001000000000000001 /* FamilyBudgetWatchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = WATCH0002000000000000001 /* FamilyBudgetWatchApp.swift */; };
+		WATCH0001000000000000002 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = WATCH0002000000000000002 /* ContentView.swift */; };
+		WATCH0001000000000000003 /* NotificationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = WATCH0002000000000000003 /* NotificationController.swift */; };
+		WATCH0001000000000000004 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = WATCH0002000000000000004 /* Assets.xcassets */; };
+		WATCH000D000000000000001 /* FamilyBudgetWatch.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = WATCH0005000000000000001 /* FamilyBudgetWatch.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		WATCH0003000000000000001 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DA0A1B082B0000001A000000 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = WATCH0004000000000000001;
+			remoteInfo = FamilyBudgetWatch;
+		};
+		WATCH0003000000000000002 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DA0A1B082B0000001A000000 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = WATCH0004000000000000001;
+			remoteInfo = FamilyBudgetWatch;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		WATCH000C000000000000001 /* Embed Watch Content */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
+			dstSubfolderSpec = 16;
+			files = (
+				WATCH000D000000000000001 /* FamilyBudgetWatch.app in Embed Watch Content */,
+			);
+			name = "Embed Watch Content";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		39E449DA2F0A492700BB19D2 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -48,6 +84,13 @@
 		DA0A1B352B000000001A000F /* FamilyBudget/Models/SpendingLimit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FamilyBudget/Models/SpendingLimit.swift; sourceTree = SOURCE_ROOT; };
 		DA0A1B372B0000001A000010 /* FamilyBudget/Models/Subscription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FamilyBudget/Models/Subscription.swift; sourceTree = SOURCE_ROOT; };
 		DA0A1B3A2B0000001A000011 /* FamilyBudget/Resources/Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = FamilyBudget/Resources/Assets.xcassets; sourceTree = SOURCE_ROOT; };
+		WATCH0002000000000000001 /* FamilyBudgetWatchApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FamilyBudgetWatchApp.swift; sourceTree = "<group>"; };
+		WATCH0002000000000000002 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		WATCH0002000000000000003 /* NotificationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationController.swift; sourceTree = "<group>"; };
+		WATCH0002000000000000004 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		WATCH0002000000000000005 /* FamilyBudgetWatch.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FamilyBudgetWatch.entitlements; sourceTree = "<group>"; };
+		WATCH0002000000000000006 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		WATCH0005000000000000001 /* FamilyBudgetWatch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FamilyBudgetWatch.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -59,6 +102,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		WATCH0006000000000000001 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -66,6 +116,7 @@
 			isa = PBXGroup;
 			children = (
 				DA0A1B122B0000001A000000,
+				WATCH0007000000000000001 /* FamilyBudgetWatch */,
 				DA0A1B162B0000001A000000 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -85,6 +136,7 @@
 			isa = PBXGroup;
 			children = (
 				DA0A1B152B0000001A000000 /* FamilyBudget.app */,
+				WATCH0005000000000000001 /* FamilyBudgetWatch.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -123,6 +175,19 @@
 			);
 			sourceTree = "<group>";
 		};
+		WATCH0007000000000000001 /* FamilyBudgetWatch */ = {
+			isa = PBXGroup;
+			children = (
+				WATCH0002000000000000001 /* FamilyBudgetWatchApp.swift */,
+				WATCH0002000000000000002 /* ContentView.swift */,
+				WATCH0002000000000000003 /* NotificationController.swift */,
+				WATCH0002000000000000004 /* Assets.xcassets */,
+				WATCH0002000000000000005 /* FamilyBudgetWatch.entitlements */,
+				WATCH0002000000000000006 /* Info.plist */,
+			);
+			path = FamilyBudgetWatch;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -133,10 +198,12 @@
 				DA0A1B112B0000001A000000 /* Sources */,
 				DA0A1B402B0000001A000012 /* Resources */,
 				39E449DB2F0A290200BB19D2 /* Frameworks */,
+				WATCH000C000000000000001 /* Embed Watch Content */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				WATCH000E000000000000001 /* PBXTargetDependency */,
 			);
 			name = FamilyBudget;
 			packageProductDependencies = (
@@ -144,6 +211,23 @@
 			);
 			productName = FamilyBudget;
 			productReference = DA0A1B152B0000001A000000 /* FamilyBudget.app */;
+			productType = "com.apple.product-type.application";
+		};
+		WATCH0004000000000000001 /* FamilyBudgetWatch */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = WATCH0008000000000000001 /* Build configuration list for PBXNativeTarget "FamilyBudgetWatch" */;
+			buildPhases = (
+				WATCH0009000000000000001 /* Sources */,
+				WATCH000A000000000000001 /* Resources */,
+				WATCH0006000000000000001 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = FamilyBudgetWatch;
+			productName = FamilyBudgetWatch;
+			productReference = WATCH0005000000000000001 /* FamilyBudgetWatch.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -157,6 +241,9 @@
 				LastUpgradeCheck = 2610;
 				TargetAttributes = {
 					DA0A1B142B0000001A000000 = {
+						CreatedOnToolsVersion = 15.0;
+					};
+					WATCH0004000000000000001 = {
 						CreatedOnToolsVersion = 15.0;
 					};
 				};
@@ -177,6 +264,7 @@
 			projectRoot = "";
 			targets = (
 				DA0A1B142B0000001A000000 /* FamilyBudget */,
+				WATCH0004000000000000001 /* FamilyBudgetWatch */,
 			);
 		};
 /* End PBXProject section */
@@ -187,6 +275,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				DA0A1B392B0000001A000011 /* FamilyBudget/Resources/Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		WATCH000A000000000000001 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				WATCH0001000000000000004 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -217,7 +313,25 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		WATCH0009000000000000001 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				WATCH0001000000000000001 /* FamilyBudgetWatchApp.swift in Sources */,
+				WATCH0001000000000000002 /* ContentView.swift in Sources */,
+				WATCH0001000000000000003 /* NotificationController.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		WATCH000E000000000000001 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = WATCH0004000000000000001 /* FamilyBudgetWatch */;
+			targetProxy = WATCH0003000000000000002 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		DA0A1B3B2B0000001A000000 /* Debug */ = {
@@ -402,6 +516,66 @@
 			};
 			name = Release;
 		};
+		WATCH000B000000000000001 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = FamilyBudgetWatch/FamilyBudgetWatch.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 4L29GR7KRH;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = FamilyBudgetWatch/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Family Budget";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.familybudget.ios;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.familybudget.ios.watchkitapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 10.0;
+			};
+			name = Debug;
+		};
+		WATCH000B000000000000002 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = FamilyBudgetWatch/FamilyBudgetWatch.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 4L29GR7KRH;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = FamilyBudgetWatch/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Family Budget";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.familybudget.ios;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.familybudget.ios.watchkitapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 10.0;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -419,6 +593,15 @@
 			buildConfigurations = (
 				DA0A1B3E2B0000001A000000 /* Debug */,
 				DA0A1B3F2B0000001A000000 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		WATCH0008000000000000001 /* Build configuration list for PBXNativeTarget "FamilyBudgetWatch" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				WATCH000B000000000000001 /* Debug */,
+				WATCH000B000000000000002 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

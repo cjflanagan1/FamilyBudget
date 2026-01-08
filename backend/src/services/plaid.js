@@ -14,15 +14,25 @@ const plaidClient = new PlaidApi(configuration);
 
 // Create a link token for the Plaid Link flow
 async function createLinkToken(userId) {
-  const response = await plaidClient.linkTokenCreate({
+  const config = {
     user: { client_user_id: userId.toString() },
     client_name: 'Family Budget',
     products: ['transactions'],
     country_codes: ['US'],
     language: 'en',
-    redirect_uri: 'https://cdn.plaid.com/link/v2/stable/sandbox-oauth-a2a-redirect.html',
-  });
+    redirect_uri: 'https://cdn.plaid.com/link/v2/stable/link-oauth-a2a-redirect.html',
+  };
+
+  const response = await plaidClient.linkTokenCreate(config);
   return response.data;
+}
+
+// Get liabilities (payment due, minimum payment, etc.)
+async function getLiabilities(accessToken) {
+  const response = await plaidClient.liabilitiesGet({
+    access_token: accessToken,
+  });
+  return response.data.liabilities;
 }
 
 // Exchange public token for access token
@@ -77,6 +87,7 @@ module.exports = {
   createLinkToken,
   exchangePublicToken,
   getAccounts,
+  getLiabilities,
   syncTransactions,
   getTransactions,
   refreshTransactions,

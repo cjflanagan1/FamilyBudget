@@ -29,7 +29,7 @@ function initAPNs() {
 }
 
 // Send push notification to device tokens
-async function sendPushNotification(deviceTokens, { title, body, data = {}, badge, sound = 'default' }) {
+async function sendPushNotification(deviceTokens, { title, body, data = {}, badge, sound = 'default', category = 'transaction' }) {
   const provider = initAPNs();
 
   if (!provider) {
@@ -42,6 +42,8 @@ async function sendPushNotification(deviceTokens, { title, body, data = {}, badg
   notification.topic = process.env.APNS_BUNDLE_ID || 'com.familybudget.ios';
   notification.sound = sound;
   notification.payload = data;
+  notification.category = category; // For Apple Watch custom notification UI
+  notification.mutableContent = 1; // Allow notification service extension to modify
 
   if (badge !== undefined) {
     notification.badge = badge;

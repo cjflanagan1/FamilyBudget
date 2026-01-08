@@ -3,16 +3,13 @@ const plaidService = require('../services/plaid');
 const { processNewTransaction } = require('../services/alerts');
 const { categorizeTransaction } = require('../utils/merchantDetection');
 
-// Store sync cursors per card
-const syncCursors = new Map();
-
 // Sync transactions for a single card
 async function syncCardTransactions(card) {
-  const { id: cardId, plaid_access_token: accessToken, user_id: userId } = card;
+  const { id: cardId, plaid_access_token: accessToken, user_id: userId, sync_cursor } = card;
 
   try {
-    // Get cursor from memory or database (in production, store in DB)
-    let cursor = syncCursors.get(cardId) || null;
+    // Use cursor from database
+    let cursor = sync_cursor || null;
 
     // Sync transactions
     const syncResponse = await plaidService.syncTransactions(accessToken, cursor);
@@ -97,11 +94,12 @@ async function syncCardTransactions(card) {
       );
     }
 
-    // Update cursor
-    syncCursors.set(cardId, next_cursor);
+    // Update cursor in database
+    await db.query('UPDATE cards SET sync_cursor = $1 WHERE id = $2', [next_cursor, cardId]);
 
     // If there are more transactions, continue syncing
     if (has_more) {
+      card.sync_cursor = next_cursor;
       await syncCardTransactions(card);
     }
 
@@ -117,7 +115,7 @@ async function syncAllTransactions() {
   try {
     // Get all cards with access tokens
     const result = await db.query(
-      'SELECT id, user_id, plaid_access_token FROM cards WHERE plaid_access_token IS NOT NULL'
+      'SELECT id, user_id, plaid_access_token, sync_cursor FROM cards WHERE plaid_access_token IS NOT NULL'
     );
 
     const cards = result.rows;

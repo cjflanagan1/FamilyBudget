@@ -171,7 +171,13 @@ struct TopMerchant: Codable, Identifiable {
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         merchantName = try container.decode(String.self, forKey: .merchantName)
-        count = try container.decode(Int.self, forKey: .count)
+        if let val = try? container.decode(Int.self, forKey: .count) {
+            count = val
+        } else if let str = try? container.decode(String.self, forKey: .count) {
+            count = Int(str) ?? 0
+        } else {
+            count = 0
+        }
         if let val = try? container.decode(Double.self, forKey: .total) {
             total = val
         } else if let str = try? container.decode(String.self, forKey: .total) {

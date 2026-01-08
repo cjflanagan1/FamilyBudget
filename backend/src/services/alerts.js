@@ -129,18 +129,33 @@ async function processNewTransaction(transaction, cardholderInfo) {
     }
 
     if (shouldSend) {
-      const title = is_food_delivery ? '🔴 Food Delivery' : 'New Purchase';
-      let body = `${cardholderName} spent ${formatCurrency(amount)} at ${merchant_name}`;
+      const isRefund = transaction.is_refund || false;
+      const title = isRefund ? '💚 Refund' : (is_food_delivery ? '🔴 Food Delivery' : 'New Purchase');
+      let body = isRefund
+        ? `${cardholderName} received ${formatCurrency(amount)} from ${merchant_name}`
+        : `${cardholderName} spent ${formatCurrency(amount)} at ${merchant_name}`;
 
-      if (spendingStatus) {
+      if (spendingStatus && !isRefund) {
         const percentStr = Math.round(spendingStatus.percent_used);
         body += ` (${percentStr}% of limit)`;
       }
 
+      // Include transaction details for Apple Watch display
       await sendPushToUser(db, parent.id, {
         title,
         body,
-        data: { type: 'purchase', transaction_id: transactionId, user_id: cardholderId }
+        data: {
+          type: isRefund ? 'refund' : 'purchase',
+          transaction_id: transactionId,
+          user_id: cardholderId,
+          transaction: {
+            amount: amount,
+            merchant_name: merchant_name,
+            cardholder_name: cardholderName,
+            is_refund: isRefund,
+            is_food_delivery: is_food_delivery
+          }
+        }
       });
       await recordAlert(parent.id, transactionId, 'parent_purchase');
       notificationsSent++;

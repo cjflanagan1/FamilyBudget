@@ -110,6 +110,10 @@ class APIClient {
         return try await request(endpoint: "/api/limits/status/all")
     }
 
+    func getCardBalances() async throws -> [CardBalance] {
+        return try await request(endpoint: "/api/plaid/balances")
+    }
+
     // MARK: - Subscriptions
 
     func getSubscriptions(userId: Int? = nil, activeOnly: Bool = true) async throws -> [Subscription] {

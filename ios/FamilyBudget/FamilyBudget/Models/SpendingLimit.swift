@@ -150,3 +150,28 @@ struct SpendingStatus: Codable, Identifiable {
         }
     }
 }
+
+struct CardBalance: Codable, Identifiable {
+    var id: Int { cardId }
+    let cardId: Int
+    let nickname: String
+    let lastFour: String
+    let currentBalance: Double
+    let availableCredit: Double
+    let creditLimit: Double
+    let paymentDue: Double?
+    let minimumPayment: Double?
+    let nextPaymentDate: String?
+
+    enum CodingKeys: String, CodingKey {
+        case cardId = "card_id"
+        case nickname
+        case lastFour = "last_four"
+        case currentBalance = "current_balance"
+        case availableCredit = "available_credit"
+        case creditLimit = "credit_limit"
+        case paymentDue = "payment_due"
+        case minimumPayment = "minimum_payment"
+        case nextPaymentDate = "next_payment_date"
+    }
+}
