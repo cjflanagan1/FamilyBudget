@@ -91,11 +91,19 @@ CREATE TABLE IF NOT EXISTS device_tokens (
   UNIQUE(device_token)
 );
 
+-- Infraction vendors table (banned merchants)
+CREATE TABLE IF NOT EXISTS infraction_vendors (
+  id SERIAL PRIMARY KEY,
+  vendor_name VARCHAR(255) NOT NULL UNIQUE,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 -- Indexes for performance
 CREATE INDEX IF NOT EXISTS idx_transactions_date ON transactions(date);
 CREATE INDEX IF NOT EXISTS idx_transactions_card_id ON transactions(card_id);
 CREATE INDEX IF NOT EXISTS idx_subscriptions_next_renewal ON subscriptions(next_renewal_date);
 CREATE INDEX IF NOT EXISTS idx_alerts_sent_transaction ON alerts_sent(transaction_id);
+CREATE INDEX IF NOT EXISTS idx_transactions_merchant ON transactions(merchant_name);
 
 -- Insert default family members
 INSERT INTO users (name, role, phone_number) VALUES
@@ -114,6 +122,16 @@ ON CONFLICT (user_id) DO NOTHING;
 INSERT INTO notification_settings (user_id, alert_mode)
 SELECT id, 'all' FROM users WHERE role = 'parent'
 ON CONFLICT (user_id) DO NOTHING;
+
+-- Insert default infraction vendors
+INSERT INTO infraction_vendors (vendor_name) VALUES
+  ('DOORDASH'),
+  ('UBER'),
+  ('UBEREATS'),
+  ('UBER EATS'),
+  ('GRUBHUB'),
+  ('POSTMATES')
+ON CONFLICT (vendor_name) DO NOTHING;
 `;
 
 async function migrate() {

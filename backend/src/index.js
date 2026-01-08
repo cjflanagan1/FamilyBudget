@@ -12,6 +12,7 @@ const userRoutes = require('./routes/users');
 const limitRoutes = require('./routes/limits');
 const subscriptionRoutes = require('./routes/subscriptions');
 const notificationRoutes = require('./routes/notifications');
+const infractionRoutes = require('./routes/infractions');
 
 const { syncAllTransactions } = require('./jobs/syncTransactions');
 const { checkUpcomingRenewals } = require('./jobs/checkRenewals');
@@ -39,6 +40,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/limits', limitRoutes);
 app.use('/api/subscriptions', subscriptionRoutes);
 app.use('/api/notifications', notificationRoutes);
+app.use('/api/infractions', infractionRoutes);
 
 // Health check
 app.get('/health', (req, res) => {

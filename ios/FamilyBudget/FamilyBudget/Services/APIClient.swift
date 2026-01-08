@@ -167,7 +167,8 @@ class APIClient {
     }
 
     func addCardManually(userId: Int, lastFour: String, nickname: String) async throws {
-        let _: [String: Any] = try await request(
+        struct Response: Decodable { let success: Bool }
+        let _: Response = try await request(
             endpoint: "/api/plaid/cards/manual",
             method: "POST",
             body: ["userId": userId, "lastFour": lastFour, "nickname": nickname]
