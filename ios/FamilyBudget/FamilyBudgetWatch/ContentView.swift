@@ -90,7 +90,7 @@ struct ContentView: View {
     }
 
     private func fetchCardBalance() async {
-        guard let url = URL(string: "http://192.168.1.184:3000/api/plaid/balances") else {
+        guard let url = URL(string: "https://familybudget-production-98f3.up.railway.app/api/plaid/balances") else {
             await MainActor.run { errorMessage = "Invalid URL" }
             return
         }
@@ -125,7 +125,7 @@ struct ContentView: View {
     }
 
     private func fetchSpentThisMonth() async {
-        guard let url = URL(string: "http://192.168.1.184:3000/api/limits/status/all") else { return }
+        guard let url = URL(string: "https://familybudget-production-98f3.up.railway.app/api/limits/status/all") else { return }
 
         do {
             let (data, _) = try await URLSession.shared.data(from: url)

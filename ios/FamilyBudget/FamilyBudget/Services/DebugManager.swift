@@ -35,9 +35,9 @@ class DebugManager: ObservableObject {
     // API configuration
     var apiBaseURL: String {
         #if DEBUG
-        return UserDefaults.standard.string(forKey: "debug_api_url") ?? "http://192.168.1.184:3000"
+        return UserDefaults.standard.string(forKey: "debug_api_url") ?? "https://familybudget-production-98f3.up.railway.app"
         #else
-        return "https://your-production-api.com"
+        return "https://familybudget-production-98f3.up.railway.app"
         #endif
     }
 
