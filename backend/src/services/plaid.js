@@ -17,7 +17,7 @@ async function createLinkToken(userId) {
   const config = {
     user: { client_user_id: userId.toString() },
     client_name: 'Family Budget',
-    products: ['transactions'],
+    products: ['transactions', 'liabilities'],
     country_codes: ['US'],
     language: 'en',
     redirect_uri: 'https://cdn.plaid.com/link/v2/stable/link-oauth-a2a-redirect.html',
