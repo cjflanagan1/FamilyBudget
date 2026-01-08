@@ -128,6 +128,25 @@ router.get('/cards/:userId', async (req, res) => {
   }
 });
 
+// Reassign a card to a different user
+router.put('/cards/:cardId/reassign', async (req, res) => {
+  try {
+    const { cardId } = req.params;
+    const { userId } = req.body;
+    const result = await db.query(
+      'UPDATE cards SET user_id = $1 WHERE id = $2 RETURNING *',
+      [userId, cardId]
+    );
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Card not found' });
+    }
+    res.json({ success: true, card: result.rows[0] });
+  } catch (err) {
+    console.error('Error reassigning card:', err);
+    res.status(500).json({ error: 'Failed to reassign card' });
+  }
+});
+
 // Remove a linked card
 router.delete('/cards/:cardId', async (req, res) => {
   try {
