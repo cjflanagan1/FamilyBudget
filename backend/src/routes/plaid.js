@@ -177,4 +177,17 @@ router.get('/balances', async (req, res) => {
   }
 });
 
+// Manual sync trigger
+router.post('/sync', async (req, res) => {
+  try {
+    const { syncAllTransactions, updateMonthlySpending } = require('../jobs/syncTransactions');
+    await syncAllTransactions();
+    await updateMonthlySpending();
+    res.json({ success: true, message: 'Sync complete' });
+  } catch (err) {
+    console.error('Error syncing:', err);
+    res.status(500).json({ error: 'Sync failed' });
+  }
+});
+
 module.exports = router;
