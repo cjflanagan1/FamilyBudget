@@ -21,9 +21,14 @@ struct ContentView: View {
                     .foregroundColor(.red)
             } else {
                 VStack(spacing: 8) {
-                    Text("Family Budget")
-                        .font(.caption2)
-                        .foregroundColor(.white.opacity(0.8))
+                    VStack(spacing: 0) {
+                        Text("Flanagan")
+                            .font(.caption)
+                            .fontWeight(.semibold)
+                        Text("Family Budget")
+                            .font(.caption2)
+                    }
+                    .foregroundColor(.white.opacity(0.9))
 
                     // Balance
                     HStack {
