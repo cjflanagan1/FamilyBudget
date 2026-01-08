@@ -91,28 +91,59 @@ struct UserSettingsView: View {
 
 struct LinkedCardsView: View {
     @StateObject private var viewModel = LinkedCardsViewModel()
+    @State private var showingLinkSheet = false
+    @State private var selectedUserId: Int?
 
     var body: some View {
         List {
-            Section {
-                NavigationLink("Link New Card") {
-                    PlaidLinkView(userId: 1) { viewModel.loadCards(userId: 1) }
+            Section("Link New Card") {
+                ForEach(viewModel.users) { user in
+                    Button {
+                        selectedUserId = user.id
+                        showingLinkSheet = true
+                    } label: {
+                        HStack {
+                            Image(systemName: "plus.circle.fill").foregroundStyle(.green)
+                            Text("Link card for \(user.name)")
+                            Spacer()
+                            Image(systemName: "chevron.right").foregroundStyle(.secondary)
+                        }
+                    }
+                    .foregroundStyle(.primary)
                 }
             }
-            Section("Cards") {
-                ForEach(viewModel.cards) { card in
-                    HStack {
-                        Image(systemName: "creditcard.fill").foregroundStyle(.blue)
-                        Text(card.name)
-                        Spacer()
-                        Text("•••• \(card.mask)").foregroundStyle(.secondary)
+            Section("Linked Cards") {
+                if viewModel.cards.isEmpty {
+                    Text("No cards linked yet").foregroundStyle(.secondary)
+                } else {
+                    ForEach(viewModel.cards) { card in
+                        HStack {
+                            Image(systemName: "creditcard.fill").foregroundStyle(.blue)
+                            VStack(alignment: .leading) {
+                                Text(card.name)
+                                if let ownerName = card.userName {
+                                    Text(ownerName).font(.caption).foregroundStyle(.secondary)
+                                }
+                            }
+                            Spacer()
+                            Text("•••• \(card.mask)").foregroundStyle(.secondary)
+                        }
                     }
                 }
             }
         }
         .listStyle(.insetGrouped)
         .navigationTitle("Cards")
-        .onAppear { viewModel.loadCards(userId: 1) }
+        .onAppear { viewModel.loadData() }
+        .sheet(isPresented: $showingLinkSheet) {
+            if let userId = selectedUserId {
+                NavigationStack {
+                    PlaidLinkView(userId: userId) {
+                        viewModel.loadData()
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -150,12 +181,19 @@ struct PlaidLinkView: View {
 
 class LinkedCardsViewModel: ObservableObject {
     @Published var cards: [LinkedCard] = []
-    func loadCards(userId: Int) {
+    @Published var users: [User] = []
+
+    func loadData() {
         Task {
             do {
-                let c = try await APIClient.shared.getLinkedCards(userId: userId)
-                await MainActor.run { cards = c }
-            } catch { print("Error: \(error)") }
+                async let cardsTask = APIClient.shared.getAllLinkedCards()
+                async let usersTask = APIClient.shared.getUsers()
+                let (c, u) = try await (cardsTask, usersTask)
+                await MainActor.run {
+                    cards = c
+                    users = u
+                }
+            } catch { print("Error loading cards: \(error)") }
         }
     }
 }

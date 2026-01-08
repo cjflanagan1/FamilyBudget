@@ -102,11 +102,20 @@ struct SubscriptionTotal: Codable {
 
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        subscriptionCount = try container.decode(Int.self, forKey: .subscriptionCount)
 
+        // Handle subscription_count as either String or Int
+        if let val = try? container.decode(Int.self, forKey: .subscriptionCount) {
+            subscriptionCount = val
+        } else if let str = try? container.decode(String.self, forKey: .subscriptionCount) {
+            subscriptionCount = Int(str) ?? 0
+        } else {
+            subscriptionCount = 0
+        }
+
+        // Handle monthly_total as either String or Double
         if let val = try? container.decodeIfPresent(Double.self, forKey: .monthlyTotal) {
             monthlyTotal = val
-        } else if let str = try container.decodeIfPresent(String.self, forKey: .monthlyTotal) {
+        } else if let str = try? container.decodeIfPresent(String.self, forKey: .monthlyTotal) {
             monthlyTotal = Double(str)
         } else {
             monthlyTotal = nil

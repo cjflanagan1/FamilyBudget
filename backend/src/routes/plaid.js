@@ -97,12 +97,28 @@ router.post('/webhook', async (req, res) => {
   }
 });
 
+// Get all linked cards (with user info)
+router.get('/cards', async (req, res) => {
+  try {
+    const result = await db.query(
+      `SELECT c.id, c.user_id, c.last_four, c.nickname, c.created_at, u.name as user_name
+       FROM cards c
+       JOIN users u ON c.user_id = u.id
+       ORDER BY c.created_at DESC`
+    );
+    res.json(result.rows);
+  } catch (err) {
+    console.error('Error fetching cards:', err);
+    res.status(500).json({ error: 'Failed to fetch cards' });
+  }
+});
+
 // Get linked cards for a user
 router.get('/cards/:userId', async (req, res) => {
   try {
     const { userId } = req.params;
     const result = await db.query(
-      'SELECT id, last_four, nickname, created_at FROM cards WHERE user_id = $1',
+      'SELECT id, user_id, last_four, nickname, created_at FROM cards WHERE user_id = $1',
       [userId]
     );
     res.json(result.rows);

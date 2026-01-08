@@ -162,6 +162,10 @@ class APIClient {
         return try await request(endpoint: "/api/plaid/cards/\(userId)")
     }
 
+    func getAllLinkedCards() async throws -> [LinkedCard] {
+        return try await request(endpoint: "/api/plaid/cards")
+    }
+
     // MARK: - Push Notifications
 
     func registerDeviceToken(token: String, userId: Int) async throws {
@@ -253,4 +257,14 @@ struct LinkedCard: Codable, Identifiable {
     let id: Int
     let mask: String
     let name: String
+    let userId: Int?
+    let userName: String?
+
+    enum CodingKeys: String, CodingKey {
+        case id
+        case mask = "last_four"
+        case name = "nickname"
+        case userId = "user_id"
+        case userName = "user_name"
+    }
 }
