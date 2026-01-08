@@ -128,6 +128,29 @@ router.get('/cards/:userId', async (req, res) => {
   }
 });
 
+// Add a card manually (without Plaid)
+router.post('/cards/manual', async (req, res) => {
+  try {
+    const { userId, lastFour, nickname } = req.body;
+
+    if (!userId || !lastFour) {
+      return res.status(400).json({ error: 'userId and lastFour are required' });
+    }
+
+    const result = await db.query(
+      `INSERT INTO cards (user_id, last_four, nickname)
+       VALUES ($1, $2, $3)
+       RETURNING *`,
+      [userId, lastFour, nickname || `Card ending in ${lastFour}`]
+    );
+
+    res.status(201).json({ success: true, card: result.rows[0] });
+  } catch (err) {
+    console.error('Error adding card manually:', err);
+    res.status(500).json({ error: 'Failed to add card' });
+  }
+});
+
 // Reassign a card to a different user
 router.put('/cards/:cardId/reassign', async (req, res) => {
   try {

@@ -91,30 +91,26 @@ struct UserSettingsView: View {
 
 struct LinkedCardsView: View {
     @StateObject private var viewModel = LinkedCardsViewModel()
-    @State private var showingLinkSheet = false
-    @State private var selectedUserId: Int?
+    @State private var showingAddCard = false
 
     var body: some View {
         List {
-            Section("Link New Card") {
-                ForEach(viewModel.users) { user in
-                    Button {
-                        selectedUserId = user.id
-                        showingLinkSheet = true
-                    } label: {
-                        HStack {
-                            Image(systemName: "plus.circle.fill").foregroundStyle(.green)
-                            Text("Link card for \(user.name)")
-                            Spacer()
-                            Image(systemName: "chevron.right").foregroundStyle(.secondary)
-                        }
+            Section {
+                Button {
+                    showingAddCard = true
+                } label: {
+                    HStack {
+                        Image(systemName: "plus.circle.fill").foregroundStyle(.green)
+                        Text("Add Card")
+                        Spacer()
+                        Image(systemName: "chevron.right").foregroundStyle(.secondary)
                     }
-                    .foregroundStyle(.primary)
                 }
+                .foregroundStyle(.primary)
             }
             Section("Linked Cards") {
                 if viewModel.cards.isEmpty {
-                    Text("No cards linked yet").foregroundStyle(.secondary)
+                    Text("No cards added yet").foregroundStyle(.secondary)
                 } else {
                     ForEach(viewModel.cards) { card in
                         HStack {
@@ -135,12 +131,94 @@ struct LinkedCardsView: View {
         .listStyle(.insetGrouped)
         .navigationTitle("Cards")
         .onAppear { viewModel.loadData() }
-        .sheet(isPresented: $showingLinkSheet) {
-            if let userId = selectedUserId {
-                NavigationStack {
-                    PlaidLinkView(userId: userId) {
-                        viewModel.loadData()
+        .sheet(isPresented: $showingAddCard) {
+            AddCardView(users: viewModel.users) {
+                viewModel.loadData()
+            }
+        }
+    }
+}
+
+struct AddCardView: View {
+    let users: [User]
+    let onSuccess: () -> Void
+    @Environment(\.dismiss) var dismiss
+
+    @State private var lastFour = ""
+    @State private var nickname = ""
+    @State private var selectedUserId: Int?
+    @State private var isLoading = false
+    @State private var errorMessage: String?
+
+    var body: some View {
+        NavigationStack {
+            Form {
+                Section("Card Details") {
+                    TextField("Last 4 digits", text: $lastFour)
+                        .keyboardType(.numberPad)
+                    TextField("Card nickname (optional)", text: $nickname)
+                }
+
+                Section("Card Owner") {
+                    ForEach(users) { user in
+                        Button {
+                            selectedUserId = user.id
+                        } label: {
+                            HStack {
+                                Text(user.name)
+                                Spacer()
+                                if selectedUserId == user.id {
+                                    Image(systemName: "checkmark")
+                                        .foregroundStyle(.blue)
+                                }
+                            }
+                        }
+                        .foregroundStyle(.primary)
                     }
+                }
+
+                if let error = errorMessage {
+                    Section {
+                        Text(error).foregroundStyle(.red)
+                    }
+                }
+            }
+            .navigationTitle("Add Card")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") { dismiss() }
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Save") {
+                        saveCard()
+                    }
+                    .disabled(lastFour.count != 4 || selectedUserId == nil || isLoading)
+                }
+            }
+        }
+    }
+
+    private func saveCard() {
+        guard let userId = selectedUserId else { return }
+        isLoading = true
+        errorMessage = nil
+
+        Task {
+            do {
+                try await APIClient.shared.addCardManually(
+                    userId: userId,
+                    lastFour: lastFour,
+                    nickname: nickname.isEmpty ? "Card ending in \(lastFour)" : nickname
+                )
+                await MainActor.run {
+                    onSuccess()
+                    dismiss()
+                }
+            } catch {
+                await MainActor.run {
+                    errorMessage = error.localizedDescription
+                    isLoading = false
                 }
             }
         }
@@ -149,33 +227,67 @@ struct LinkedCardsView: View {
 
 struct PlaidLinkView: View {
     let userId: Int
+    let userName: String
     let onSuccess: () -> Void
-    @StateObject private var handler = PlaidLinkHandler.shared
+    @ObservedObject private var handler = PlaidLinkHandler.shared
     @Environment(\.dismiss) var dismiss
 
     var body: some View {
-        VStack(spacing: 20) {
+        VStack(spacing: 24) {
             Spacer()
-            Text("Link Bank Account").font(.title2).fontWeight(.bold)
-            Text("Connect your cards to track spending").foregroundStyle(.secondary)
+
+            Image(systemName: "creditcard.fill")
+                .font(.system(size: 60))
+                .foregroundStyle(.blue)
+
+            Text("Link Card for \(userName)")
+                .font(.title2)
+                .fontWeight(.bold)
+
+            Text("Connect to American Express to track spending")
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+                .padding(.horizontal)
+
             Spacer()
+
             Button {
-                if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-                   let vc = scene.windows.first?.rootViewController {
-                    handler.startLink(for: userId, from: vc)
-                }
+                handler.startLink(for: userId)
             } label: {
-                Text(handler.isLinking ? "Connecting..." : "Connect")
-                    .frame(maxWidth: .infinity).padding()
-                    .background(Color.blue).foregroundStyle(.white).cornerRadius(10)
+                HStack {
+                    if handler.isLinking {
+                        ProgressView()
+                            .tint(.white)
+                    }
+                    Text(handler.isLinking ? "Connecting..." : "Connect with Plaid")
+                }
+                .frame(maxWidth: .infinity)
+                .padding()
+                .background(Color.blue)
+                .foregroundStyle(.white)
+                .cornerRadius(12)
             }
             .disabled(handler.isLinking)
-            .padding(.horizontal)
-            Spacer()
+            .padding(.horizontal, 32)
+
+            Button("Cancel") {
+                dismiss()
+            }
+            .foregroundStyle(.secondary)
+            .padding(.bottom, 32)
         }
-        .navigationTitle("Link Card")
-        .alert("Success!", isPresented: Binding(get: { handler.linkedSuccessfully }, set: { _ in handler.linkedSuccessfully = false; onSuccess(); dismiss() })) { Button("OK") {} }
-        .alert("Error", isPresented: Binding(get: { handler.linkError != nil }, set: { _ in handler.linkError = nil })) { Button("OK") {} } message: { Text(handler.linkError ?? "") }
+        .onChange(of: handler.linkedSuccessfully) { success in
+            if success {
+                handler.linkedSuccessfully = false
+                onSuccess()
+                dismiss()
+            }
+        }
+        .alert("Error", isPresented: Binding(get: { handler.linkError != nil }, set: { _ in handler.linkError = nil })) {
+            Button("OK") {}
+        } message: {
+            Text(handler.linkError ?? "")
+        }
     }
 }
 

@@ -166,6 +166,14 @@ class APIClient {
         return try await request(endpoint: "/api/plaid/cards")
     }
 
+    func addCardManually(userId: Int, lastFour: String, nickname: String) async throws {
+        let _: [String: Any] = try await request(
+            endpoint: "/api/plaid/cards/manual",
+            method: "POST",
+            body: ["userId": userId, "lastFour": lastFour, "nickname": nickname]
+        )
+    }
+
     // MARK: - Push Notifications
 
     func registerDeviceToken(token: String, userId: Int) async throws {
