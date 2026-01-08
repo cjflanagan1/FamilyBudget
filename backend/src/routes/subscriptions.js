@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../config/database');
+const { autoDetectSubscriptions } = require('../services/subscriptions');
 
 // Get all subscriptions
 router.get('/', async (req, res) => {
@@ -113,6 +114,33 @@ router.delete('/:id', async (req, res) => {
   } catch (err) {
     console.error('Error deleting subscription:', err);
     res.status(500).json({ error: 'Failed to delete subscription' });
+  }
+});
+
+// Auto-detect subscriptions from transaction patterns
+router.post('/detect', async (req, res) => {
+  try {
+    const { userId } = req.body;
+
+    if (userId) {
+      // Detect for specific user
+      const created = await autoDetectSubscriptions(userId);
+      res.json({ success: true, created });
+    } else {
+      // Detect for all users
+      const users = await db.query('SELECT id FROM users');
+      const allCreated = [];
+
+      for (const user of users.rows) {
+        const created = await autoDetectSubscriptions(user.id);
+        allCreated.push(...created);
+      }
+
+      res.json({ success: true, created: allCreated });
+    }
+  } catch (err) {
+    console.error('Error detecting subscriptions:', err);
+    res.status(500).json({ error: 'Failed to detect subscriptions' });
   }
 });
 
