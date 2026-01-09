@@ -14,8 +14,6 @@ struct MainTabView: View {
         TabView {
             DashboardView()
                 .tabItem { Label("Home", systemImage: "house.fill") }
-            CardholderListView()
-                .tabItem { Label("Family", systemImage: "person.2.fill") }
             TransactionListView()
                 .tabItem { Label("Transactions", systemImage: "list.bullet") }
             SubscriptionsView()

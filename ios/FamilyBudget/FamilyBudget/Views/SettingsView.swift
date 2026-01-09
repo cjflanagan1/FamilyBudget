@@ -1,21 +1,12 @@
 import SwiftUI
 
 struct SettingsView: View {
-    @StateObject private var viewModel = SettingsViewModel()
     @State private var versionTapCount = 0
     @State private var showDevMode = false
 
     var body: some View {
         NavigationStack {
             List {
-                Section("Family") {
-                    ForEach(viewModel.users) { user in
-                        NavigationLink(user.name) {
-                            UserSettingsView(user: user)
-                        }
-                    }
-                }
-
                 Section("Cards") {
                     NavigationLink("Linked Cards") { LinkedCardsView() }
                 }
@@ -41,50 +32,7 @@ struct SettingsView: View {
             }
             .listStyle(.insetGrouped)
             .navigationTitle("Settings")
-            .onAppear { viewModel.loadUsers() }
             .alert("Developer Mode", isPresented: $showDevMode) { Button("OK") {} }
-        }
-    }
-}
-
-struct UserSettingsView: View {
-    let user: User
-    @State private var limit = ""
-    @State private var phone = ""
-    @Environment(\.dismiss) var dismiss
-
-    var body: some View {
-        Form {
-            Section("Spending Limit") {
-                TextField("Monthly Limit", text: $limit)
-                    .keyboardType(.decimalPad)
-            }
-            Section("Contact") {
-                TextField("Phone", text: $phone)
-                    .keyboardType(.phonePad)
-            }
-            Section {
-                Button("Save") {
-                    Task {
-                        // Strip non-numeric characters except decimal point
-                        let cleanLimit = limit.filter { $0.isNumber || $0 == "." }
-                        if let l = Double(cleanLimit), l > 0 {
-                            _ = try? await APIClient.shared.updateSpendingLimit(userId: user.id, monthlyLimit: l)
-                        }
-                        if !phone.isEmpty {
-                            _ = try? await APIClient.shared.updateUserPhone(id: user.id, phone: phone)
-                        }
-                        dismiss()
-                    }
-                }
-            }
-        }
-        .navigationTitle(user.name)
-        .onAppear {
-            if let ml = user.monthlyLimit {
-                limit = String(format: "%.0f", ml)
-            }
-            phone = user.phoneNumber ?? ""
         }
     }
 }
@@ -115,12 +63,7 @@ struct LinkedCardsView: View {
                     ForEach(viewModel.cards) { card in
                         HStack {
                             Image(systemName: "creditcard.fill").foregroundStyle(.blue)
-                            VStack(alignment: .leading) {
-                                Text(card.name)
-                                if let ownerName = card.userName {
-                                    Text(ownerName).font(.caption).foregroundStyle(.secondary)
-                                }
-                            }
+                            Text(card.name)
                             Spacer()
                             Text("•••• \(card.mask)").foregroundStyle(.secondary)
                         }
@@ -132,7 +75,7 @@ struct LinkedCardsView: View {
         .navigationTitle("Cards")
         .onAppear { viewModel.loadData() }
         .sheet(isPresented: $showingAddCard) {
-            AddCardView(users: viewModel.users) {
+            AddCardView {
                 viewModel.loadData()
             }
         }
@@ -140,13 +83,11 @@ struct LinkedCardsView: View {
 }
 
 struct AddCardView: View {
-    let users: [User]
     let onSuccess: () -> Void
     @Environment(\.dismiss) var dismiss
 
     @State private var lastFour = ""
     @State private var nickname = ""
-    @State private var selectedUserId: Int?
     @State private var isLoading = false
     @State private var errorMessage: String?
 
@@ -157,24 +98,6 @@ struct AddCardView: View {
                     TextField("Last 4 digits", text: $lastFour)
                         .keyboardType(.numberPad)
                     TextField("Card nickname (optional)", text: $nickname)
-                }
-
-                Section("Card Owner") {
-                    ForEach(users) { user in
-                        Button {
-                            selectedUserId = user.id
-                        } label: {
-                            HStack {
-                                Text(user.name)
-                                Spacer()
-                                if selectedUserId == user.id {
-                                    Image(systemName: "checkmark")
-                                        .foregroundStyle(.blue)
-                                }
-                            }
-                        }
-                        .foregroundStyle(.primary)
-                    }
                 }
 
                 if let error = errorMessage {
@@ -193,21 +116,20 @@ struct AddCardView: View {
                     Button("Save") {
                         saveCard()
                     }
-                    .disabled(lastFour.count != 4 || selectedUserId == nil || isLoading)
+                    .disabled(lastFour.count != 4 || isLoading)
                 }
             }
         }
     }
 
     private func saveCard() {
-        guard let userId = selectedUserId else { return }
         isLoading = true
         errorMessage = nil
 
         Task {
             do {
                 try await APIClient.shared.addCardManually(
-                    userId: userId,
+                    userId: 2, // CJ is the primary account holder
                     lastFour: lastFour,
                     nickname: nickname.isEmpty ? "Card ending in \(lastFour)" : nickname
                 )
@@ -226,8 +148,6 @@ struct AddCardView: View {
 }
 
 struct PlaidLinkView: View {
-    let userId: Int
-    let userName: String
     let onSuccess: () -> Void
     @ObservedObject private var handler = PlaidLinkHandler.shared
     @Environment(\.dismiss) var dismiss
@@ -240,7 +160,7 @@ struct PlaidLinkView: View {
                 .font(.system(size: 60))
                 .foregroundStyle(.blue)
 
-            Text("Link Card for \(userName)")
+            Text("Link Card")
                 .font(.title2)
                 .fontWeight(.bold)
 
@@ -252,7 +172,7 @@ struct PlaidLinkView: View {
             Spacer()
 
             Button {
-                handler.startLink(for: userId)
+                handler.startLink(for: 2) // CJ is primary
             } label: {
                 HStack {
                     if handler.isLinking {
@@ -293,31 +213,15 @@ struct PlaidLinkView: View {
 
 class LinkedCardsViewModel: ObservableObject {
     @Published var cards: [LinkedCard] = []
-    @Published var users: [User] = []
 
     func loadData() {
         Task {
             do {
-                async let cardsTask = APIClient.shared.getAllLinkedCards()
-                async let usersTask = APIClient.shared.getUsers()
-                let (c, u) = try await (cardsTask, usersTask)
+                let c = try await APIClient.shared.getAllLinkedCards()
                 await MainActor.run {
                     cards = c
-                    users = u
                 }
             } catch { print("Error loading cards: \(error)") }
-        }
-    }
-}
-
-class SettingsViewModel: ObservableObject {
-    @Published var users: [User] = []
-    func loadUsers() {
-        Task {
-            do {
-                let u = try await APIClient.shared.getUsers()
-                await MainActor.run { users = u }
-            } catch { print("Error: \(error)") }
         }
     }
 }
